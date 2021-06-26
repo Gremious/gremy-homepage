@@ -1,0 +1,4 @@
+project_name = "GremyHomepage"
+name = "local"
+#hostname = "localhost"
+hostname = "gremy.co.uk"
