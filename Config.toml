@@ -1,0 +1,4 @@
+project_name = "GremyHomepage"
+name = "local"
+dev = true
+hostname = "localtest.pw"

@@ -1,8 +1,24 @@
-[package]
-name = "homepage"
-version = "0.1.0"
-edition = "2018"
+[workspace]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+members = [
+	"server",
+	"shared",
+	"client",
+#	"tools",
+]
 
-[dependencies]
+exclude = [
+	"hobo",
+]
+
+[patch.crates-io]
+hobo = { path = "hobo/lib" }
+hobo_derive = { path = "hobo/derive" }
+hobo_css = { path = "hobo/css" }
+hobo_css_macros = { path = "hobo/css/macros" }
+
+[profile.release]
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+panic = "abort"
