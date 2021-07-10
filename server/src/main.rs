@@ -107,6 +107,7 @@ async fn main() -> anyhow::Result<()> {
 	})
 		.bind(format!("127.0.0.1:{}", 3000))?
 		.bind(format!("192.168.0.17:{}", 3000))?
+		.bind(format!("10.142.0.2:{}", 3000))?
 		// .bind(format!("80.5.14.235:{}", 3000))?
 		// .bind_rustls(format!("127.0.0.1:{}", CONFIG.port), config)?
 		.run().await?
