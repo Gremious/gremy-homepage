@@ -758,19 +758,10 @@ pub fn fonts() -> css::Style { css::style! {
 	}
 
 	@font-face {
-		family: "Rubik".into(),
-		style: Style::Normal,
-		weight: (Weight::Number(500), None),
-		src: vec![Source::Local("Rubik Medium".into()), Source::Local("Rubik-Medium".into()), Source::Url("https://fonts.gstatic.com/s/rubik/v12/iJWZBXyIfDnIV5PNhY1KTN7Z-Yh-NYiFV0U1.woff2".into(), Some(Format::Woff2))],
-		unicode_range: unicode_range![0x0000..0x00FF, 0x0131, 0x0152..0x0153, 0x02BB..0x02BC, 0x02C6, 0x02DA, 0x02DC, 0x2000..0x206F, 0x2074, 0x20AC, 0x2122, 0x2191, 0x2193, 0x2212, 0x2215, 0xFEFF, 0xFFFD],
-		display: Display::Swap,
-	}
-
-	@font-face {
-		family: "Lato".into(),
+		family: "Alfa Slab One".into(),
 		style: Style::Normal,
 		weight: (Weight::Number(400), None),
-		src: vec![Source::Local("Lato".into()), Source::Local("Regular".into()), Source::Url("https://fonts.gstatic.com/s/lato/v17/S6uyw4BMUTPHjx4wXg.woff2".into(), Some(Format::Woff2))],
+		src: vec![Source::Local("Alfa Slab One".into()), Source::Local("Alfa-Slab-One".into()), Source::Url("https://fonts.gstatic.com/s/alfaslabone/v10/6NUQ8FmMKwSEKjnm5-4v-4Jh2dJhew.woff2".into(), Some(Format::Woff2))],
 		unicode_range: unicode_range![0x0000..0x00FF, 0x0131, 0x0152..0x0153, 0x02BB..0x02BC, 0x02C6, 0x02DA, 0x02DC, 0x2000..0x206F, 0x2074, 0x20AC, 0x2122, 0x2191, 0x2193, 0x2212, 0x2215, 0xFEFF, 0xFFFD],
 		display: Display::Swap,
 	}
