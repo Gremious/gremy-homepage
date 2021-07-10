@@ -1,0 +1,7 @@
+port = "443"
+#port = "25565"
+salt = "salt"
+
+[ssl]
+cert = "server/ssl/cert.pem"
+key = "server/ssl/privkey.pem"
