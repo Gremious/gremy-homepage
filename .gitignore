@@ -16,3 +16,4 @@ Cargo.lock
 *.pdb
 
 /public/wasm/
+/server/ssl/

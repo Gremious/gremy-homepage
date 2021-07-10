@@ -31,7 +31,23 @@ pub mod colors {
 		red => 0xE2_60_54_FF;
 	}
 }
-//
+
+#[allow(dead_code)]
+pub mod text {
+	use super::*;
+
+	pub mod alfa_slab_one {
+		use super::*;
+
+		pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| css::properties! {
+			css::font_family!("Alfa Slab One"),
+			css::font_size!(64 px),
+			// css::line_height!(1.369 px),
+			css::font_weight!(400),
+		});
+	}
+}
+
 // #[allow(dead_code)]
 // pub mod text {
 // 	use super::*;
