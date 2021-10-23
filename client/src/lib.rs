@@ -1,14 +1,14 @@
 #![recursion_limit = "1024"]
 
+mod style;
 mod prelude;
-mod global_style;
 mod windows;
 
 use prelude::*;
 
 fn root(element: &web_sys::HtmlElement) {
 	let element = cmp::Body(hobo::create::html_element(element));
-	element.child(windows::main::App::new());
+	element.child(windows::main::App::new_element());
 }
 
 #[wasm_bindgen(start)]
@@ -21,7 +21,7 @@ pub fn main() {
 
 		let body = web_sys::window().unwrap().document().unwrap().body().unwrap();
 		body.set_inner_html("");
-		body.set_attribute(web_str::class(), &hobo::fetch_classname(global_style::style())).unwrap();
+		body.set_attribute(web_str::class(), &hobo::fetch_classname(style::style())).unwrap();
 
 		root(&body);
 	});
