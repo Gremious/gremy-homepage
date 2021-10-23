@@ -7,15 +7,11 @@ members = [
 #	"tools",
 ]
 
-exclude = [
-	"hobo",
-]
-
 [patch.crates-io]
-hobo = { path = "hobo/lib" }
-hobo_derive = { path = "hobo/derive" }
-hobo_css = { path = "hobo/css" }
-hobo_css_macros = { path = "hobo/css/macros" }
+hobo = { path = "client/hobo/lib" }
+hobo_derive = { path = "client/hobo/derive" }
+hobo_css = { path = "client/hobo/css" }
+hobo_css_macros = { path = "client/hobo/css/macros" }
 
 [profile.release]
 opt-level = "z"
