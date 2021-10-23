@@ -1,7 +1,9 @@
-port = "443"
-#port = "25565"
+http_port = 80
+https_port = 443
+https = true
 salt = "salt"
 
 [ssl]
-cert = "server/ssl/cert.pem"
-key = "server/ssl/privkey.pem"
+cert = "C:/Certbot/live/gremy.co.uk/fullchain.pem"
+key = "C:/Certbot/live/gremy.co.uk/privkey.pem"
+

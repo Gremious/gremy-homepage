@@ -1,4 +1,4 @@
 project_name = "GremyHomepage"
 name = "local"
-dev = true
+#hostname = "localhost"
 hostname = "gremy.co.uk"
