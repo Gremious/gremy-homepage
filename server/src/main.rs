@@ -90,6 +90,7 @@ async fn main() -> anyhow::Result<()> {
 			.wrap(Compress::new(ContentEncoding::Auto))
         	.wrap(DefaultHeaders::new().header("Access-Control-Allow-Origin", "*"))
         	.wrap(middleware::redirect::ToHttps)
+			.service(web::resource("/favicon.ico").to(async || NamedFile::open("public/img/favicon/sparkling_heart.ico")))
 			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))
 			.service(web::resource("/robots.txt").to(async || NamedFile::open("public/robots.txt")))
 			.service(actix_files::Files::new("/public", "public"))
