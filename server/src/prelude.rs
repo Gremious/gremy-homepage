@@ -1,22 +1,17 @@
-pub use actix::prelude::*;
 pub use actix_web::rt::spawn;
-pub use actix_web::web;
 pub use anyhow::Context;
 pub use futures::prelude::*;
 pub use once_cell::sync::Lazy;
-pub use reqwest::header;
 pub use serde::{Deserialize, Serialize};
 pub use shared::IntoResOpt as _;
-pub use std::collections::{BTreeMap, HashMap, HashSet};
-pub use std::convert::TryFrom;
 
 pub static CONFIG: Lazy<Config> = Lazy::new(|| toml::from_str(include_str!("../Config.toml")).expect("failed to parse config"));
 
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Config {
-    pub http_port: u32,
-    pub https_port: u32,
+    pub http_port: u16,
+    pub https_port: u16,
     pub https: bool,
     pub salt: String,
     pub ssl: SslConfig,

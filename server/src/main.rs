@@ -7,13 +7,15 @@ use actix_files::NamedFile;
 use actix_web::http::ContentEncoding;
 use actix_web::middleware::{Logger, *};
 use actix_web::{web, App, HttpResponse, HttpServer};
+// use actix_service::{Service, Transform};
 
-use anyhow::Context;
+pub use reqwest::header;
 use rustls_pemfile::{certs, pkcs8_private_keys};
 
 use prelude::*;
 
 mod prelude;
+mod middleware;
 
 #[allow(clippy::format_in_format_args)]
 fn reply() -> HttpResponse {
@@ -35,10 +37,8 @@ pub fn init_logger() {
         .filter(None, log::LevelFilter::Info)
         .filter(
             Some("server"),
-            #[cfg(debug_assertions)]
-            log::LevelFilter::Trace,
-            #[cfg(not(debug_assertions))]
-            log::LevelFilter::Debug,
+            #[cfg(debug_assertions)] log::LevelFilter::Trace,
+            #[cfg(not(debug_assertions))] log::LevelFilter::Debug,
         )
         .format(|buf, record| {
             use std::io::Write;
@@ -57,7 +57,7 @@ pub fn init_logger() {
 
             writeln!(
                 buf,
-                "[{time} {level}  {module} {file}:{line}] {args}",
+                "[{time} {level} {module} {file}:{line}] {args}",
                 time = chrono::Utc::now().format("%Y-%m-%d %H:%M:%S%.3f"),
                 level = level_style.value(record.level()),
                 module = record.module_path().unwrap_or("module?"),
@@ -78,13 +78,14 @@ async fn main() -> anyhow::Result<()> {
 			.wrap(Logger::new("%s in %Ts, %b bytes \"%r\""))
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
 			.wrap(Compress::new(ContentEncoding::Auto))
-        	.wrap(DefaultHeaders::new().header("Access-Control-Allow-Origin", "gremy.co.uk"))
+        	.wrap(DefaultHeaders::new().header("Access-Control-Allow-Origin", "*"))
+        	.wrap(middleware::redirect::Redirect::default())
 			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))
 			.service(web::resource("/robots.txt").to(async || NamedFile::open("public/robots.txt")))
 			.service(actix_files::Files::new("/public", "public"))
 			.default_service(web::route().to(reply))
 	})
-		// .bind(format!("0.0.0.0:{}", CONFIG.http_port))?
+		.bind(format!("0.0.0.0:{}", CONFIG.http_port))?
 		.bind_rustls(format!("0.0.0.0:{}", CONFIG.https_port), {
 			let cert_file = &mut BufReader::new(File::open(&CONFIG.ssl.cert)?);
 			let key_file = &mut BufReader::new(File::open(&CONFIG.ssl.key)?);
