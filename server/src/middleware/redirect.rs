@@ -1,9 +1,7 @@
 // Taken from https://github.com/MoonZoon/MoonZoon/blob/d46e47db01366be91890c3a50e0be35fa0072ad9/crates/moon/src/redirect.rs
 
 use super::*;
-use actix_web::dev::{
-    forward_ready, ResponseBody, Service, ServiceRequest, ServiceResponse, Transform,
-};
+use actix_web::dev::{forward_ready, ResponseBody, Service, ServiceRequest, ServiceResponse, Transform};
 use actix_web::http::header::LOCATION;
 use actix_web::http::uri::{Authority, InvalidUriParts, Scheme, Uri};
 use actix_web::{Error, HttpResponse};
@@ -11,41 +9,11 @@ use bool_ext::BoolExt;
 use futures::future::{ok, Either, FutureExt, LocalBoxFuture, Ready};
 use std::convert::TryFrom;
 
+/// Redirects HTTP to HTTPS
 #[derive(Copy, Clone)]
-pub struct Redirect {
-    http_to_https: bool,
-    from_port: u16,
-    to_port: u16,
-}
+pub struct RedirectToHttps;
 
-impl Default for Redirect {
-    fn default() -> Self {
-        Self {
-            http_to_https: true,
-            from_port: CONFIG.http_port,
-            to_port: CONFIG.https_port,
-        }
-    }
-}
-
-impl Redirect {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn http_to_https(mut self, http_to_https: bool) -> Self {
-        self.http_to_https = http_to_https;
-        self
-    }
-
-    pub fn port(mut self, from_port: u16, to_port: u16) -> Self {
-        self.from_port = from_port;
-        self.to_port = to_port;
-        self
-    }
-}
-
-impl<S, B> Transform<S, ServiceRequest> for Redirect
+impl<S, B> Transform<S, ServiceRequest> for RedirectToHttps
 where
     S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
@@ -67,7 +35,7 @@ where
 
 pub struct RedirectMiddleware<S> {
     service: S,
-    redirect: Redirect,
+    redirect: RedirectToHttps,
 }
 
 impl<S> RedirectMiddleware<S> {
@@ -83,13 +51,9 @@ impl<S> RedirectMiddleware<S> {
     }
 
     fn should_redirect(&self, uri: &Uri) -> Option<()> {
-        let from_port = self.redirect.from_port;
-
         match (uri.scheme()?, uri.authority()?.port_u16()) {
-            (_, Some(port)) => from_port == port,
-            (scheme, None) if scheme == &Scheme::HTTP => from_port == 80,
-            (scheme, None) if scheme == &Scheme::HTTPS => from_port == 443,
-            _ => None?,
+            (_, Some(port)) => port == CONFIG.http_port,
+            (scheme, None) => scheme == &Scheme::HTTP,
         }
         .to_option()
     }
@@ -97,22 +61,15 @@ impl<S> RedirectMiddleware<S> {
     fn redirect_uri(&self, uri: Uri) -> Option<Uri> {
         let mut uri_parts = uri.into_parts();
 
-        if self.redirect.http_to_https && uri_parts.scheme.as_ref()? == &Scheme::HTTP {
+        if uri_parts.scheme.as_ref()? == &Scheme::HTTP {
             uri_parts.scheme = Some(Scheme::HTTPS);
         }
-        uri_parts.authority = Authority::try_from(
-            format!("{}:{}", uri_parts.authority?.host(), self.redirect.to_port).as_str(),
-        )
-        .ok();
+        uri_parts.authority = Authority::try_from(format!("{}:{}", uri_parts.authority?.host(), CONFIG.https_port).as_str()).ok();
 
         Uri::from_parts(uri_parts).ok()
     }
 
-    fn redirect<B>(
-        &self,
-        req: ServiceRequest,
-        uri: &Uri,
-    ) -> Ready<Result<ServiceResponse<ResponseBody<B>>, Error>> {
+    fn redirect<B>(&self, req: ServiceRequest, uri: &Uri) -> Ready<Result<ServiceResponse<ResponseBody<B>>, Error>> {
         let http_response = HttpResponse::MovedPermanently()
             .insert_header((LOCATION, uri.to_string()))
             .finish()
@@ -130,10 +87,7 @@ where
 {
     type Response = ServiceResponse<ResponseBody<B>>;
     type Error = S::Error;
-    type Future = Either<
-        LocalBoxFuture<'static, Result<Self::Response, Self::Error>>,
-        Ready<Result<Self::Response, Self::Error>>,
-    >;
+    type Future = Either<LocalBoxFuture<'static, Result<Self::Response, Self::Error>>, Ready<Result<Self::Response, Self::Error>>>;
 
     forward_ready!(service);
 
@@ -146,9 +100,7 @@ where
         }
         self.service
             .call(req)
-            .map(|result| {
-                result.map(|response| response.map_body(|_, body| ResponseBody::Body(body)))
-            })
+            .map(|result| result.map(|response| response.map_body(|_, body| ResponseBody::Body(body))))
             .boxed_local()
             .left_future()
     }

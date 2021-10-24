@@ -7,7 +7,6 @@ use actix_files::NamedFile;
 use actix_web::http::ContentEncoding;
 use actix_web::middleware::{Logger, *};
 use actix_web::{web, App, HttpResponse, HttpServer};
-// use actix_service::{Service, Transform};
 
 pub use reqwest::header;
 use rustls_pemfile::{certs, pkcs8_private_keys};
@@ -79,7 +78,7 @@ async fn main() -> anyhow::Result<()> {
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
 			.wrap(Compress::new(ContentEncoding::Auto))
         	.wrap(DefaultHeaders::new().header("Access-Control-Allow-Origin", "*"))
-        	.wrap(middleware::redirect::Redirect::default())
+        	.wrap(middleware::redirect::RedirectToHttps)
 			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))
 			.service(web::resource("/robots.txt").to(async || NamedFile::open("public/robots.txt")))
 			.service(actix_files::Files::new("/public", "public"))
