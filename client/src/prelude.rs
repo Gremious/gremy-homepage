@@ -4,7 +4,7 @@ pub use core::future::Future;
 pub use futures_signals::signal::{Mutable, Signal, SignalExt};
 pub use hobo::create::components as cmp;
 pub use hobo::prelude::*;
-pub use hobo::{enclose as e, events, state};
+pub use hobo::{enclose as e, events, Resource, DefaultResource};
 pub use once_cell::sync::{Lazy, OnceCell};
 pub use serde::Deserialize;
 pub use smart_default::SmartDefault;
