@@ -28,6 +28,8 @@ pub fn main() {
 	wasm_logger::init(wasm_logger::Config::default());
 	console_error_panic_hook::set_once();
 
+	Resource::register_resource(Mutable::new(windows::Tab::default()));
+
 	wasm_bindgen_futures::spawn_local(async {
 		log::info!("Main Thread Spawned");
 
