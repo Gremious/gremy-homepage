@@ -9,7 +9,9 @@ use bool_ext::BoolExt;
 use futures::future::{ok, Either, FutureExt, LocalBoxFuture, Ready};
 use std::convert::TryFrom;
 
-/// Redirects HTTP to HTTPS
+/// Middleware for redirecting requests from HTTP to HTTPS.
+///
+/// It uses the `CONFIG.http_port` and `CONFIG.https_port`'s;
 #[derive(Copy, Clone)]
 pub struct ToHttps;
 
@@ -26,9 +28,7 @@ where
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
     fn new_transform(&self, service: S) -> Self::Future {
-        ok(ToHttpsMiddleware {
-            service,
-        })
+        ok(ToHttpsMiddleware { service })
     }
 }
 
