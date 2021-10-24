@@ -19,6 +19,7 @@ use actix_files::NamedFile;
 use actix_web::http::ContentEncoding;
 use actix_web::middleware::{Logger, DefaultHeaders, Compress, NormalizePath, TrailingSlash};
 use actix_web::{web, App, HttpResponse, HttpServer};
+use actix_web::http::header::{ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_TYPE};
 
 pub use reqwest::header;
 use rustls_pemfile::{certs, pkcs8_private_keys};
@@ -88,7 +89,10 @@ async fn main() -> anyhow::Result<()> {
 			.wrap(Logger::new("%s in %Ts, %b bytes \"%r\""))
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
 			.wrap(Compress::new(ContentEncoding::Auto))
-        	.wrap(DefaultHeaders::new().header("Access-Control-Allow-Origin", "*"))
+        	.wrap(DefaultHeaders::new()
+				.header(CONTENT_TYPE, "text/html; charset=UTF-8")
+        	    .header(ACCESS_CONTROL_ALLOW_ORIGIN, "*")
+            )
         	.wrap(middleware::redirect::ToHttps)
 			.service(web::resource("/favicon.ico").to(async || NamedFile::open("public/img/favicon/sparkling_heart.ico")))
 			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))

@@ -11,7 +11,7 @@ use std::convert::TryFrom;
 
 /// Middleware for redirecting requests from HTTP to HTTPS.
 ///
-/// It uses the `CONFIG.http_port` and `CONFIG.https_port`'s;
+/// It uses the `CONFIG.http_port` and `CONFIG.https_port`'s.
 #[derive(Copy, Clone)]
 pub struct ToHttps;
 
