@@ -110,7 +110,7 @@ pub mod text {
 // }
 
 #[allow(dead_code)]
-pub mod element_style {
+pub mod element {
     use super::*;
 
     pub static OVERFLOW_ELLIPSIS: Lazy<Vec<css::Property>> = Lazy::new(|| {
