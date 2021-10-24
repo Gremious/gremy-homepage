@@ -1,3 +1,17 @@
+#![warn(clippy::pedantic, clippy::todo)]
+#![cfg_attr(not(debug_assertions), warn(
+	clippy::dbg_macro,
+	clippy::use_debug,
+	clippy::print_stdout,
+	clippy::unimplemented,
+))]
+#![allow(
+	clippy::missing_errors_doc,
+	clippy::too_many_lines,
+	clippy::missing_panics_doc,
+	clippy::wildcard_imports,
+)]
+
 use once_cell::sync::Lazy;
 use serde::{Deserialize, Serialize};
 

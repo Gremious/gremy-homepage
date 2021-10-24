@@ -1,3 +1,15 @@
+#![warn(clippy::pedantic, clippy::todo)]
+#![cfg_attr(not(debug_assertions), warn(
+	clippy::dbg_macro,
+	clippy::use_debug,
+	clippy::print_stdout,
+	clippy::unimplemented,
+))]
+#![allow(
+	clippy::too_many_lines,
+	clippy::missing_panics_doc,
+	clippy::wildcard_imports,
+)]
 #![feature(try_blocks, async_closure, fn_traits, unboxed_closures)]
 
 use std::fs::File;
@@ -5,7 +17,7 @@ use std::io::BufReader;
 
 use actix_files::NamedFile;
 use actix_web::http::ContentEncoding;
-use actix_web::middleware::{Logger, *};
+use actix_web::middleware::{Logger, DefaultHeaders, Compress, NormalizePath, TrailingSlash};
 use actix_web::{web, App, HttpResponse, HttpServer};
 
 pub use reqwest::header;
@@ -16,7 +28,6 @@ use prelude::*;
 mod prelude;
 mod middleware;
 
-#[allow(clippy::format_in_format_args)]
 fn reply() -> HttpResponse {
     static REPLY: Lazy<String> = Lazy::new(|| {
         let js = minifier::js::minify(&std::fs::read_to_string("public/wasm/client.js").expect("couldn't find the js payload"));
@@ -78,7 +89,7 @@ async fn main() -> anyhow::Result<()> {
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
 			.wrap(Compress::new(ContentEncoding::Auto))
         	.wrap(DefaultHeaders::new().header("Access-Control-Allow-Origin", "*"))
-        	.wrap(middleware::redirect::RedirectToHttps)
+        	.wrap(middleware::redirect::ToHttps)
 			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))
 			.service(web::resource("/robots.txt").to(async || NamedFile::open("public/robots.txt")))
 			.service(actix_files::Files::new("/public", "public"))

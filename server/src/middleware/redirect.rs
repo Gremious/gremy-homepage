@@ -11,9 +11,9 @@ use std::convert::TryFrom;
 
 /// Redirects HTTP to HTTPS
 #[derive(Copy, Clone)]
-pub struct RedirectToHttps;
+pub struct ToHttps;
 
-impl<S, B> Transform<S, ServiceRequest> for RedirectToHttps
+impl<S, B> Transform<S, ServiceRequest> for ToHttps
 where
     S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
@@ -21,24 +21,22 @@ where
 {
     type Response = ServiceResponse<ResponseBody<B>>;
     type Error = S::Error;
-    type Transform = RedirectMiddleware<S>;
+    type Transform = ToHttpsMiddleware<S>;
     type InitError = ();
     type Future = Ready<Result<Self::Transform, Self::InitError>>;
 
     fn new_transform(&self, service: S) -> Self::Future {
-        ok(RedirectMiddleware {
+        ok(ToHttpsMiddleware {
             service,
-            redirect: *self,
         })
     }
 }
 
-pub struct RedirectMiddleware<S> {
+pub struct ToHttpsMiddleware<S> {
     service: S,
-    redirect: RedirectToHttps,
 }
 
-impl<S> RedirectMiddleware<S> {
+impl<S> ToHttpsMiddleware<S> {
     fn uri(req: &ServiceRequest) -> Result<Uri, InvalidUriParts> {
         let connection_info = req.connection_info();
 
@@ -50,7 +48,7 @@ impl<S> RedirectMiddleware<S> {
         Uri::from_parts(uri_parts)
     }
 
-    fn should_redirect(&self, uri: &Uri) -> Option<()> {
+    fn should_redirect(uri: &Uri) -> Option<()> {
         match (uri.scheme()?, uri.authority()?.port_u16()) {
             (_, Some(port)) => port == CONFIG.http_port,
             (scheme, None) => scheme == &Scheme::HTTP,
@@ -58,7 +56,7 @@ impl<S> RedirectMiddleware<S> {
         .to_option()
     }
 
-    fn redirect_uri(&self, uri: Uri) -> Option<Uri> {
+    fn redirect_uri(uri: Uri) -> Option<Uri> {
         let mut uri_parts = uri.into_parts();
 
         if uri_parts.scheme.as_ref()? == &Scheme::HTTP {
@@ -69,7 +67,7 @@ impl<S> RedirectMiddleware<S> {
         Uri::from_parts(uri_parts).ok()
     }
 
-    fn redirect<B>(&self, req: ServiceRequest, uri: &Uri) -> Ready<Result<ServiceResponse<ResponseBody<B>>, Error>> {
+    fn redirect<B>(req: ServiceRequest, uri: &Uri) -> Ready<Result<ServiceResponse<ResponseBody<B>>, Error>> {
         let http_response = HttpResponse::MovedPermanently()
             .insert_header((LOCATION, uri.to_string()))
             .finish()
@@ -79,7 +77,8 @@ impl<S> RedirectMiddleware<S> {
     }
 }
 
-impl<S, B> Service<ServiceRequest> for RedirectMiddleware<S>
+#[allow(clippy::type_complexity)]
+impl<S, B> Service<ServiceRequest> for ToHttpsMiddleware<S>
 where
     S: Service<ServiceRequest, Response = ServiceResponse<B>, Error = Error>,
     S::Future: 'static,
@@ -93,9 +92,9 @@ where
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
         if let Ok(uri) = Self::uri(&req) {
-            if self.should_redirect(&uri).is_some() {
-                let redirect_uri = self.redirect_uri(uri).unwrap();
-                return self.redirect(req, &redirect_uri).right_future();
+            if Self::should_redirect(&uri).is_some() {
+                let redirect_uri = Self::redirect_uri(uri).unwrap();
+                return Self::redirect(req, &redirect_uri).right_future();
             }
         }
         self.service

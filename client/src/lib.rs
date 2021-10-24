@@ -1,3 +1,15 @@
+#![warn(clippy::pedantic, clippy::todo)]
+#![cfg_attr(not(debug_assertions), warn(
+	clippy::dbg_macro,
+	clippy::use_debug,
+	clippy::print_stdout,
+	clippy::unimplemented,
+))]
+#![allow(
+	clippy::too_many_lines,
+	clippy::missing_panics_doc,
+	clippy::wildcard_imports,
+)]
 #![recursion_limit = "1024"]
 
 mod style;

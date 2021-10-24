@@ -16,16 +16,16 @@ impl App {
         let main_container = cmp::div().class((css::Display::Flex, css::FlexDirection::Column, css::width!(100%))).with(|&element| {
             element.add_component(TAB.subscribe(move |_| {
                 let child = SomeElement(hobo::Children::descendants(element)[1]);
-                child.replace_with(MainWindow::new_element().erase());
-            }))
+                child.replace_with(Page::new_element().erase());
+            }));
         });
 
-        element.child(main_container.child(MainWindow::new_element()))
+        element.child(main_container.child(Page::new_element()))
     }
 }
 
-pub struct MainWindow;
-impl MainWindow {
+pub struct Page;
+impl Page {
     pub fn new_element() -> cmp::Div {
         match *TAB.view() {
             Tab::Main => cmp::div()
