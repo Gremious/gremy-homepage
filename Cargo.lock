@@ -489,6 +489,7 @@ dependencies = [
  "once_cell",
  "serde",
  "serde_json",
+ "shared",
  "smart-default",
  "wasm-bindgen",
  "wasm-bindgen-futures",
