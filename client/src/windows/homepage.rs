@@ -11,7 +11,7 @@ impl Homepage {
                 css::background_color!(css::Color { r: 00, g: 15, b: 20, a: 255 }),
             ))
             .child(cmp::div()
-                .text("Hello. Ă U Ũ")
+                .text("Hello.")
                 .class(css::style!(
                     .& {
                         css::padding_top!(2.5%),

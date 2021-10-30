@@ -10,7 +10,8 @@ use crate::prelude::*;
 /// * `srcs` - Source urls
 ///
 pub fn font(family: &str, local: &str, style: Style, weight: Weight, srcs: &[&str]) -> css::Style {
-	let mut ret = ().into();
+	let mut ret = css::Style(Vec::new());
+
 	for &src in srcs {
 		ret = ret + css::style!{
 			@font-face {
@@ -22,6 +23,7 @@ pub fn font(family: &str, local: &str, style: Style, weight: Weight, srcs: &[&st
 			}
 		};
 	}
+
 	ret
 }
 

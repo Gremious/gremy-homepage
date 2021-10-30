@@ -13,4 +13,3 @@ target/
 *.pdb
 
 /public/wasm/
-ngrok.exe
