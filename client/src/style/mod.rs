@@ -37,7 +37,7 @@ pub mod text {
         pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
             css::properties! {
                 css::font_family!("Space Mono"),
-                css::font_weight!(normal),
+                css::font_weight!(400),
             }
         });
 
@@ -45,7 +45,7 @@ pub mod text {
             css::style!(
                 .& {
                     css::font_family!("Space Mono"),
-                    css::font_weight!(normal),
+                    css::font_weight!(400),
                     css::font_size!(64 px),
                 }
 

@@ -1,16 +1,25 @@
 use super::*;
 
 fn container_style() -> css::Style {
-    css::class!((
-        css::Display::Flex,
-        css::FlexDirection::Column,
-        css::JustifyContent::FlexStart,
-        css::BoxSizing::BorderBox,
-        css::padding!(2.5%),
-        css::background_color!(colors::bg_black),
-        css::BackgroundImage::Some(vec![css::Image::Url("../public/img/lain/lain57_t.gif".to_string())]),
-        "background-position: center;",
-    ))
+    css::style!(
+        .& {
+            css::Display::Flex,
+            css::FlexDirection::Column,
+            css::JustifyContent::FlexStart,
+            css::BoxSizing::BorderBox,
+            css::padding!(2.5%),
+            css::background_color!(colors::bg_black),
+            css::BackgroundImage::Some(vec![css::Image::Url("../public/img/lain/lain57_t.gif".to_string())]),
+            "background-position: center;",
+        }
+
+       @media All && MaxWidth(css::unit!(500 px)) {
+            .& {
+                css::font_size!(12 vw),
+                "background-size: cover;",
+            }
+        }
+    )
 }
 
 fn element_style() -> css::Style {
@@ -20,10 +29,8 @@ fn element_style() -> css::Style {
             // css::AlignSelf::FlexEnd,
         }
 
-        @media All && MaxWidth(css::unit!(500 px)) {
-            .& {
-                css::font_size!(12 vw),
-            }
+        raw("@keyframes writing") {
+            "from{ opacity:0 } to { opacity: 1 }"
         }
     )
 }
@@ -32,11 +39,23 @@ pub fn new_element() -> cmp::Div {
     cmp::div()
         .class(container_style())
         .child(cmp::div()
-            .text("Hello.")
+            .child(fade_in_typewriter_animated_text("Hello.".to_owned()))
+            // .text("Hello.")
             .class(element_style())
             .class_typed::<text::FontTag>(text::space_mono::BIG.clone())
         )
-        // .child(cmp::img().attr(web_str::src(), "../public/img/lain/lain57_t.gif"))
+}
+
+pub fn fade_in_typewriter_animated_text(text: String) -> cmp::Div {
+    cmp::div()
+        .children(text.chars().enumerate().map(|(i, c)| {
+            cmp::span()
+                .text(c.to_string())
+                .class((
+                    css::opacity!(0),
+                    format!("animation: writing 0.1s linear forwards {}s;", i as f32 * 0.1)
+                ))
+        }))
 }
 
 pub fn old_homepage() -> cmp::Div {
