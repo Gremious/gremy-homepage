@@ -30,8 +30,6 @@ impl Page {
         match tab {
             Tab::Homepage => homepage::new_element(),
         }
-        .class_typed::<Page>(css::class!(
-            css::size!(100%)
-        ))
+        .class_typed::<Page>(css::class!(css::size!(100%)))
     }
 }

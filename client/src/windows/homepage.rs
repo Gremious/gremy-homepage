@@ -58,6 +58,7 @@ pub fn fade_in_typewriter_animated_text(text: String) -> cmp::Div {
         }))
 }
 
+#[allow(dead_code)]
 pub fn old_homepage() -> cmp::Div {
     cmp::div()
         .class((css::Display::Flex, css::JustifyContent::Center, css::size!(100%), css::background_color!(css::color::PINK)))

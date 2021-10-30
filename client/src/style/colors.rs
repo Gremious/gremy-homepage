@@ -1,10 +1,8 @@
-#[allow(non_upper_case_globals, dead_code)]
 use super::*;
 
 macro_rules! def_colors {
     ($($name:ident => $color:expr);+$(;)?) => {$(pub static $name: css::Color = css::Color::from_hex($color);)+};
 }
-
 
 def_colors! {
     debug_blue => 0x00_87_FF_47;
