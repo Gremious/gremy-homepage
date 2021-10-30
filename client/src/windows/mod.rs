@@ -28,7 +28,10 @@ pub struct Page;
 impl Page {
     pub fn new_element(tab: Tab) -> cmp::Div {
         match tab {
-            Tab::Homepage => homepage::Homepage::new_element(),
+            Tab::Homepage => homepage::new_element(),
         }
+        .class_typed::<Page>(css::class!(
+            css::size!(100%)
+        ))
     }
 }
