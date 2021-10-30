@@ -32,6 +32,10 @@ fn element_style() -> css::Style {
         raw("@keyframes writing") {
             "from{ opacity:0 } to { opacity: 1 }"
         }
+
+        raw("@keyframes caret") {
+            "0% { opacity:0 } 50% { opacity: 1 }"
+        }
     )
 }
 
@@ -39,7 +43,11 @@ pub fn new_element() -> cmp::Div {
     cmp::div()
         .class(container_style())
         .child(cmp::div()
-            .child(fade_in_typewriter_animated_text("Hello.".to_owned()))
+            .child(cmp::div()
+                .class(css::Display::Flex)
+                .child(fade_in_typewriter_animated_text("Hello.".to_owned()))
+                .child(blinking_caret())
+            )
             // .text("Hello.")
             .class(element_style())
             .class_typed::<text::FontTag>(text::space_mono::BIG.clone())
@@ -56,6 +64,14 @@ pub fn fade_in_typewriter_animated_text(text: String) -> cmp::Div {
                     format!("animation: writing 0.1s linear forwards {}s;", i as f32 * 0.1)
                 ))
         }))
+}
+
+pub fn blinking_caret() -> cmp::Div {
+    cmp::div()
+        .child(cmp::span()
+            .text("_")
+            .class("animation: caret 1.33s steps(1, end) infinite;")
+        )
 }
 
 #[allow(dead_code)]
