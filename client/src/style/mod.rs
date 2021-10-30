@@ -1,62 +1,11 @@
 mod fonts;
+#[allow(non_upper_case_globals, dead_code)]
+pub mod colors;
+#[allow(dead_code)]
+pub mod text;
 
 use crate::prelude::*;
 use fonts::fonts;
-
-#[allow(non_upper_case_globals, dead_code)]
-pub mod colors {
-    pub use super::*;
-
-    macro_rules! def_colors {
-        ($($name:ident => $color:expr);+$(;)?) => {$(pub static $name: css::Color = css::Color::from_hex($color);)+};
-    }
-
-    def_colors! {
-        debug_blue => 0x00_87_FF_47;
-    }
-}
-
-#[allow(dead_code)]
-pub mod text {
-    use super::*;
-    pub struct FontTag;
-
-    pub mod alfa_slab_one {
-        use super::*;
-
-        pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
-            css::properties! {
-                css::font_family!("Alfa Slab One"),
-                css::font_size!(64 px),
-                css::font_weight!(400),
-            }
-        });
-    }
-
-    pub mod degrassi {
-        use super::*;
-
-        pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
-            css::properties! {
-                css::font_family!("Degrassi"),
-                css::font_size!(64 px),
-                css::font_weight!(400),
-            }
-        });
-    }
-
-    pub mod space_mono {
-        use super::*;
-
-        pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
-            css::properties! {
-                css::font_family!("Space Mono"),
-                css::font_size!(64 px),
-                css::font_weight!(normal),
-            }
-        });
-    }
-}
 
 #[allow(dead_code)]
 pub mod element {
