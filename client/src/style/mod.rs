@@ -19,6 +19,7 @@ pub mod colors {
 #[allow(dead_code)]
 pub mod text {
     use super::*;
+    pub struct FontTag;
 
     pub mod alfa_slab_one {
         use super::*;
@@ -27,8 +28,31 @@ pub mod text {
             css::properties! {
                 css::font_family!("Alfa Slab One"),
                 css::font_size!(64 px),
-                // css::line_height!(1.369 px),
                 css::font_weight!(400),
+            }
+        });
+    }
+
+    pub mod degrassi {
+        use super::*;
+
+        pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
+            css::properties! {
+                css::font_family!("Degrassi"),
+                css::font_size!(64 px),
+                css::font_weight!(400),
+            }
+        });
+    }
+
+    pub mod space_mono {
+        use super::*;
+
+        pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
+            css::properties! {
+                css::font_family!("Space Mono"),
+                css::font_size!(64 px),
+                css::font_weight!(normal),
             }
         });
     }
