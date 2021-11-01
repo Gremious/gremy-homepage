@@ -1,13 +1,16 @@
 use super::*;
 
 pub mod homepage;
+pub mod debug;
 
 pub type TabState = Mutable<Tab>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, SmartDefault)]
 pub enum Tab {
-    #[default]
+    // #[default]
     Homepage,
+    #[default]
+    Debug,
 }
 
 pub struct Root;
@@ -26,30 +29,18 @@ impl Root {
 
 pub struct Page;
 impl Page {
+
     pub fn new_element(tab: Tab) -> cmp::Div {
+        if let tab = Tab::Debug { return debug::marked_page(); }
+
         match tab {
             Tab::Homepage => homepage::new_element(),
+            Tab::Debug => unreachable!(),
         }
         .class_typed::<Page>(css::style!(
             .& {
                 css::size!(100%),
             }
-
-            //TODO: Benchmark this?
-            // Assumption: Slower initial website load, because whole class is loaded immediately,
-            // but faster element load after, lazies won't be evaluated then instead?
-
-            // .& >>.[text::space_mono::TagBody] {
-            //     css::font_family!("Space Mono"),
-            //     css::font_weight!(400),
-            // }
-
-            // .& >>.[text::space_mono::TagBig] {
-            //     text::space_mono::TagBig::properties(),
-                // css::font_family!("Space Mono"),
-                // css::font_weight!(400),
-                // css::font_size!(64 px),
-            // }
         ))
     }
 }
