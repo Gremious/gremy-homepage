@@ -67,34 +67,32 @@ pub fn new_element() -> cmp::Div {
         )
         .child(cmp::div()
             .class(image_style())
-            .with(|&element| element.add_on_mouse_down(move |mouse_event| {
+            .with_on_mouse_down(move |&element, mouse_event| {
                 element.set_class_tagged("Cursor", css::class!(css::Cursor::Grabbing));
                 *element.get_cmp_mut::<Clicked>() = Clicked(true);
-            }))
-            .with(|&element| element.add_on_mouse_up(move |_| {
+            })
+            .with_on_mouse_up(move |&element, _| {
                 element.set_class_tagged("Cursor", css::class!(css::Cursor::Auto));
                 element.get_cmp_mut::<Clicked>().0 = false;
-            }))
-            .with(|&element| element.add_on_mouse_leave(move |_| {
+            })
+            .with_on_mouse_leave(move |&element, _| {
                 element.set_class_tagged("Cursor", css::class!(css::Cursor::Auto));
                 element.get_cmp_mut::<Clicked>().0 = false;
-            }))
-            .with(|&element| {
-                element.add_on_mouse_move(move |mouse_event| {
-                    if element.get_cmp::<Clicked>().0 {
-                        let image_rect = element.get_cmp::<web_sys::HtmlElement>().get_bounding_client_rect();
-                        let (image_top, image_left) = (image_rect.y(), image_rect.x());
-                        let (move_y, move_x) = (mouse_event.movement_y(), mouse_event.movement_x());
+            })
+            .with_on_mouse_move(move |&element, mouse_event| {
+                if element.get_cmp::<Clicked>().0 {
+                    let image_rect = element.get_cmp::<web_sys::HtmlElement>().get_bounding_client_rect();
+                    let (image_top, image_left) = (image_rect.y(), image_rect.x());
+                    let (move_y, move_x) = (mouse_event.movement_y(), mouse_event.movement_x());
 
-                        let top = image_top + move_y as f64;
-                        let left = image_left + move_x as f64;
+                    let top = image_top + move_y as f64;
+                    let left = image_left + move_x as f64;
 
-                        element.set_style((
-                            css::top!(top),
-                            css::left!(left),
-                        ));
-                    }
-                });
+                    element.set_style((
+                        css::top!(top),
+                        css::left!(left),
+                    ));
+                }
             })
             .component(Clicked(false))
         )

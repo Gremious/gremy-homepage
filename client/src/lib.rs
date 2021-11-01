@@ -15,6 +15,7 @@
 mod prelude;
 mod style;
 mod windows;
+pub mod hobo_plus;
 
 use prelude::*;
 

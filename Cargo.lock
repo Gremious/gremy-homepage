@@ -487,6 +487,7 @@ dependencies = [
  "js-sys",
  "log",
  "once_cell",
+ "paste",
  "serde",
  "serde_json",
  "shared",
