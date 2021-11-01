@@ -27,12 +27,24 @@ pub mod degrassi {
 pub mod space_mono {
     use super::*;
 
+    pub struct TagBody;
     pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
         css::properties! {
             css::font_family!("Space Mono"),
             css::font_weight!(400),
         }
     });
+
+    pub struct TagBig;
+    impl TagBig {
+        pub fn properties() -> Vec<css::Property> {
+            css::properties!(
+                css::font_family!("Space Mono"),
+                css::font_weight!(400),
+                css::font_size!(64 px),
+            )
+        }
+    }
 
     pub static BIG: Lazy<css::Style> = Lazy::new(|| {
         css::style!(
