@@ -1,3 +1,4 @@
+#![feature(test)]
 #![warn(clippy::pedantic, clippy::todo)]
 #![cfg_attr(not(debug_assertions), warn(
     clippy::dbg_macro,
@@ -16,6 +17,7 @@ mod prelude;
 mod style;
 mod windows;
 pub mod hobo_plus;
+mod benches;
 
 use prelude::*;
 

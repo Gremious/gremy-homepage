@@ -18,14 +18,15 @@ pub fn marked_page() -> cmp::Div {
     }
 
     fonts!{ A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z }
-
-    debug::new_element_marked()
+    cmp::div()
         .class_typed::<Page>(css::class!(css::size!(100%)) + test_font_style)
+        .child(debug::new_element_marked())
 }
 
 pub fn classes_page() -> cmp::Div {
-    debug::new_element_classes()
+    cmp::div()
         .class_typed::<Page>(css::class!(css::size!(100%)))
+        .child(debug::new_element_classes())
 }
 
 pub fn new_element_marked() -> cmp::Div {
