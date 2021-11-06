@@ -1,6 +1,7 @@
 use super::*;
 
 pub mod homepage;
+pub mod debug;
 
 pub type TabState = Mutable<Tab>;
 
@@ -8,6 +9,8 @@ pub type TabState = Mutable<Tab>;
 pub enum Tab {
     #[default]
     Homepage,
+    // #[default]
+    Debug,
 }
 
 pub struct Root;
@@ -27,9 +30,31 @@ impl Root {
 pub struct Page;
 impl Page {
     pub fn new_element(tab: Tab) -> cmp::Div {
+        if let Tab::Debug = tab {
+            return debug::classes_page()
+                .with(|&element| spawn(async move {
+                    web_sys::console::time_with_label("benchmark");
+
+                    for i in 0..15 {
+                        let ele = SomeElement(element.get_cmp::<Children>()[0]);
+                        ele.replace_with(debug::new_element_classes());
+                        log::debug!("{}", i);
+                    }
+
+                    web_sys::console::time_end_with_label("benchmark");
+                    let perf = web_sys::window().expect("should have a window").performance().expect("should have performance").now();
+                    log::debug!("perf: {:#?}", perf);
+                }));
+        }
+
         match tab {
             Tab::Homepage => homepage::new_element(),
+            Tab::Debug => unreachable!(),
         }
-        .class_typed::<Page>(css::class!(css::size!(100%)))
+        .class_typed::<Page>(css::style!(
+            .& {
+                css::size!(100%),
+            }
+        ))
     }
 }

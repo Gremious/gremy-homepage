@@ -1,4 +1,4 @@
-pub use crate::style::*;
+pub use crate::{style::*, hobo_plus::*};
 pub use anyhow::Context;
 pub use core::future::Future;
 pub use futures_signals::signal::{Mutable, Signal, SignalExt};
