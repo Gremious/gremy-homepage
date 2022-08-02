@@ -16,7 +16,7 @@ use std::fs::File;
 use std::io::BufReader;
 
 use actix_files::NamedFile;
-use actix_web::http::ContentEncoding;
+// use actix_web::http::ContentEncoding;
 use actix_web::middleware::{Logger, DefaultHeaders, Compress, NormalizePath, TrailingSlash};
 use actix_web::{web, App, HttpResponse, HttpServer};
 use actix_web::http::header::{ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_TYPE};
@@ -27,16 +27,16 @@ use rustls_pemfile::{certs, pkcs8_private_keys};
 use prelude::*;
 
 mod prelude;
-mod middleware;
 
-fn reply() -> HttpResponse {
+async fn reply() -> HttpResponse {
     static REPLY: Lazy<String> = Lazy::new(|| {
-        let js = minifier::js::minify(&std::fs::read_to_string("public/wasm/client.js").expect("couldn't find the js payload"));
+		let js = &std::fs::read_to_string("public/wasm/client.js").expect("couldn't find the js payload");
+        let js = minifier::js::minify(js);
 
         minify::html::minify(&format!(
             include_str!("../response.html"),
             js = js,
-            path = format!("{}://{}/public/wasm/client_bg.wasm", if CONFIG.https { "https" } else { "http" }, shared::CONFIG.hostname)
+			path = format!("{}://{}/public/wasm/client_bg.wasm", if CONFIG.https { "https" } else { "http" }, shared::CONFIG.hostname)
         ))
     });
 
@@ -88,20 +88,20 @@ async fn main() -> anyhow::Result<()> {
 		App::new()
 			.wrap(Logger::new("%s in %Ts, %b bytes \"%r\""))
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
-			.wrap(Compress::new(ContentEncoding::Auto))
+			// .wrap(Compress::new(ContentEncoding::Auto))
         	.wrap(DefaultHeaders::new()
 				.header(CONTENT_TYPE, "text/html; charset=UTF-8")
         	    .header(ACCESS_CONTROL_ALLOW_ORIGIN, "*")
             )
-        	.wrap(middleware::redirect::ToHttps)
+            // .wrap(middleware::redirect::ToHttps)
 			.service(web::resource("/favicon.ico").to(async || NamedFile::open("public/img/favicon/sparkling_heart.ico")))
 			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))
 			.service(web::resource("/robots.txt").to(async || NamedFile::open("public/robots.txt")))
-			.service(actix_files::Files::new("/public", "public"))
+			.service(actix_files::Files::new("/public", "public").show_files_listing())
 			.default_service(web::route().to(reply))
 	})
-		.bind(format!("0.0.0.0:{}", CONFIG.http_port))?
-		.bind_rustls(format!("0.0.0.0:{}", CONFIG.https_port), {
+		// .bind(format!("[::]:{}", CONFIG.http_port))?
+		.bind_rustls(format!("[::]:{}", CONFIG.https_port), {
 			let cert_file = &mut BufReader::new(File::open(&CONFIG.ssl.cert)?);
 			let key_file = &mut BufReader::new(File::open(&CONFIG.ssl.key)?);
 

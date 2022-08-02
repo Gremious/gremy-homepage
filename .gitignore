@@ -13,3 +13,6 @@ target/
 *.pdb
 
 /public/wasm/
+
+# Session file and the like
+*.vim
