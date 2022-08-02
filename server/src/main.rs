@@ -16,7 +16,6 @@ use std::fs::File;
 use std::io::BufReader;
 
 use actix_files::NamedFile;
-// use actix_web::http::ContentEncoding;
 use actix_web::middleware::{Logger, DefaultHeaders, Compress, NormalizePath, TrailingSlash};
 use actix_web::{web, App, HttpResponse, HttpServer};
 use actix_web::http::header::{ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_TYPE};
@@ -93,7 +92,6 @@ async fn main() -> anyhow::Result<()> {
 				.header(CONTENT_TYPE, "text/html; charset=UTF-8")
         	    .header(ACCESS_CONTROL_ALLOW_ORIGIN, "*")
             )
-            // .wrap(middleware::redirect::ToHttps)
 			.service(web::resource("/favicon.ico").to(async || NamedFile::open("public/img/favicon/sparkling_heart.ico")))
 			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))
 			.service(web::resource("/robots.txt").to(async || NamedFile::open("public/robots.txt")))
