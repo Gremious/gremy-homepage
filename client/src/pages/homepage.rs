@@ -17,6 +17,7 @@ fn container() -> e::Div {
 				css::FlexDirection::Column,
 				css::JustifyContent::FlexStart,
 				css::BoxSizing::BorderBox,
+				css::overflow!(hidden),
 				css::padding!(2.5%),
 				css::background_color!(colors::bg_black),
 			}
@@ -99,8 +100,12 @@ fn lain_image() -> e::Div {
 		.tap(|&element| element.add_on_mouse_move(move |mouse_event| {
 			if element.get_cmp::<Clicked>().0 {
 				let (move_y, move_x) = (mouse_event.movement_y(), mouse_event.movement_x());
-				let top = element.top() + f64::from(move_y);
+
+				let window_height = window().inner_height().unwrap().as_f64().unwrap();
+				let window_width = window().inner_width().unwrap().as_f64().unwrap();
+
 				let left = element.left() + f64::from(move_x);
+				let top = element.top() + f64::from(move_y);
 
 				element.set_style((css::top!(top), css::left!(left)));
 			}
