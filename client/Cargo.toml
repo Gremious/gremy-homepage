@@ -9,7 +9,6 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 anyhow = "1"
 console_error_panic_hook = "0.1"
-futures-signals = "0.3"
 hobo = { version = "0.3", features = ["experimental"] }
 js-sys = "0.3"
 log = "0.4"

@@ -1,8 +1,11 @@
 pub use crate::{style::*, hobo_plus::*};
 pub use anyhow::Context;
 pub use core::future::Future;
-pub use futures_signals::signal::{Mutable, Signal, SignalExt};
-pub use hobo::{prelude::*, events, create as cmp};
+pub use hobo::{
+	prelude::*,
+    create as e,
+    signals::signal::{Mutable, SignalExt}
+};
 pub use tap::prelude::*;
 pub use once_cell::sync::{Lazy, OnceCell};
 pub use serde::Deserialize;

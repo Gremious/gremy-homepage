@@ -32,7 +32,7 @@ pub fn main() {
 
         let body = web_sys::window().unwrap().document().unwrap().body().unwrap();
         body.set_inner_html("");
-        let hobo_body = cmp::Body(hobo::create::html_element(&body));
+        let hobo_body = e::Body(hobo::create::html_element(&body));
 		hobo_body.set_class(style::style());
 
         hobo_body.add_child(windows::Root::new_element());

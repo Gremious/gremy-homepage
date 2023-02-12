@@ -52,20 +52,20 @@ fn image_style() -> css::Style {
     ))
 }
 
-pub fn new_element() -> cmp::Div {
-    cmp::div()
+pub fn new_element() -> e::Div {
+    e::div()
         .class(container_style())
-        .child(cmp::div()
+        .child(e::div()
             .class(text_style())
             // .mark::<text::space_mono::TagBig>()
             .class_typed::<text::FontTag>(text::space_mono::BIG.clone())
-            .child(cmp::div()
+            .child(e::div()
                 .class(css::Display::Flex)
                 .child(fade_in_typewriter_animated_text("Hello.".to_owned()))
                 .child(blinking_caret())
             )
         )
-        .child(cmp::div()
+        .child(e::div()
             .class(image_style())
 			.tap(|&element| element.add_on_mouse_down(move |_| {
 				element.set_class_tagged("Cursor", css::class!(css::Cursor::Grabbing));
@@ -96,10 +96,10 @@ pub fn new_element() -> cmp::Div {
 }
 
 
-pub fn fade_in_typewriter_animated_text(text: String) -> cmp::Div {
-    cmp::div()
-        .children(text.chars().enumerate().map(|(i, c)| -> cmp::Span {
-            cmp::span()
+pub fn fade_in_typewriter_animated_text(text: String) -> e::Div {
+    e::div()
+        .children(text.chars().enumerate().map(|(i, c)| -> e::Span {
+            e::span()
                 .text(c.to_string())
                 .class((
                     css::opacity!(0),
@@ -108,9 +108,9 @@ pub fn fade_in_typewriter_animated_text(text: String) -> cmp::Div {
         }))
 }
 
-pub fn blinking_caret() -> cmp::Div {
-    cmp::div()
-        .child(cmp::span()
+pub fn blinking_caret() -> e::Div {
+    e::div()
+        .child(e::span()
             .text("_")
             .class("animation: caret 1.33s steps(1, end) infinite;")
         )
@@ -119,10 +119,10 @@ pub fn blinking_caret() -> cmp::Div {
 //=
 
 #[allow(dead_code)]
-pub fn old_homepage() -> cmp::Div {
-    cmp::div()
+pub fn old() -> e::Div {
+    e::div()
         .class((css::Display::Flex, css::JustifyContent::Center, css::size!(100%), css::background_color!(css::color::PINK)))
-        .child(cmp::div()
+        .child(e::div()
             .text("Bonanza Extravaganza")
             .class(css::style!(
                 .& {
@@ -139,7 +139,7 @@ pub fn old_homepage() -> cmp::Div {
                 }
             ))
         )
-        .child(cmp::a().attr(web_str::href(), "https://www.cat-bounce.com").class(css::size!(100%))
-            .child(cmp::img().attr(web_str::src(), "../public/img/cat.gif").class(css::size!(100%)))
+        .child(e::a().attr(web_str::href(), "https://www.cat-bounce.com").class(css::size!(100%))
+            .child(e::img().attr(web_str::src(), "../public/img/cat.gif").class(css::size!(100%)))
         )
 }
