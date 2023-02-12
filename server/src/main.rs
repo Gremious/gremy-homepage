@@ -12,21 +12,22 @@
 )]
 #![feature(try_blocks, async_closure, fn_traits, unboxed_closures)]
 
-use std::fs::File;
-use std::io::BufReader;
 
 use actix_files::NamedFile;
-use actix_web::middleware::{Logger, DefaultHeaders, Compress, NormalizePath, TrailingSlash};
+use actix_web::middleware::{Logger, NormalizePath, TrailingSlash};
 use actix_web::{web, App, HttpResponse, HttpServer};
-use actix_web::http::header::{ACCESS_CONTROL_ALLOW_ORIGIN, CONTENT_TYPE};
 
 pub use reqwest::header;
+
+use std::fs::File;
+use std::io::BufReader;
 use rustls_pemfile::{certs, pkcs8_private_keys};
 
 use prelude::*;
 
 mod prelude;
 
+#[allow(clippy::unused_async)]
 async fn reply() -> HttpResponse {
 	static REPLY: Lazy<String> = Lazy::new(|| {
 		let js = &std::fs::read_to_string("public/wasm/client.js").expect("couldn't find the js payload");
@@ -49,7 +50,7 @@ pub fn init_logger() {
 			Some("server"),
 			#[cfg(debug_assertions)] log::LevelFilter::Trace,
 			#[cfg(not(debug_assertions))] log::LevelFilter::Debug,
-			)
+		)
 		.format(|buf, record| {
 			use std::io::Write;
 
@@ -83,7 +84,7 @@ pub fn init_logger() {
 async fn main() -> anyhow::Result<()> {
 	init_logger();
 
-	HttpServer::new(|| {
+	Ok(HttpServer::new(|| {
 		App::new()
 			.wrap(Logger::new("%s in %Ts, %b bytes \"%r\""))
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
@@ -94,7 +95,6 @@ async fn main() -> anyhow::Result<()> {
 			.default_service(web::route().to(reply))
 	})
 	.bind(format!("[::]:{}", CONFIG.http_port))?
-	// .bind(format!("[::]:{}", CONFIG.http_port))?
 	// .bind_rustls(format!("[::]:{}", CONFIG.https_port), {
 	//     let cert_file = &mut BufReader::new(File::open(&CONFIG.ssl.cert)?);
 	//     let key_file = &mut BufReader::new(File::open(&CONFIG.ssl.key)?);
@@ -114,6 +114,5 @@ async fn main() -> anyhow::Result<()> {
 	//         .with_no_client_auth()
 	//         .with_single_cert(cert_chain, keys.remove(0))?
 	// })?
-	.run().await?
-		.into_ok()
+	.run().await?)
 }

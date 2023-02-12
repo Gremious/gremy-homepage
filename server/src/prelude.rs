@@ -1,7 +1,6 @@
 pub use anyhow::Context;
 pub use once_cell::sync::Lazy;
 pub use serde::{Deserialize, Serialize};
-pub use shared::IntoResOpt as _;
 
 pub static CONFIG: Lazy<Config> = Lazy::new(|| toml::from_str(include_str!("../Config.toml")).expect("failed to parse config"));
 

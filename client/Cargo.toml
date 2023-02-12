@@ -30,4 +30,5 @@ wasm-mt = "0.1"
 version = "0.3"
 features = [
 	"DomRect",
+	"Performance"
 ]

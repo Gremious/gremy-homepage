@@ -7,9 +7,9 @@ pub type TabState = Mutable<Tab>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, SmartDefault)]
 pub enum Tab {
-    #[default]
+	#[default]
     Homepage,
-    // #[default]
+	// #[default]
     Debug,
 }
 
@@ -30,26 +30,9 @@ impl Root {
 pub struct Page;
 impl Page {
     pub fn new_element(tab: Tab) -> cmp::Div {
-        if let Tab::Debug = tab {
-            return debug::classes_page()
-                .with(|&element| spawn(async move {
-                    web_sys::console::time_with_label("benchmark");
-
-                    for i in 0..15 {
-                        let ele = Element(element.get_cmp::<Children>()[0]);
-                        ele.replace_with(debug::new_element_classes());
-                        log::debug!("{}", i);
-                    }
-
-                    web_sys::console::time_end_with_label("benchmark");
-                    // let perf = web_sys::window().expect("should have a window").performance().expect("should have performance").now();
-                    // log::debug!("perf: {:#?}", perf);
-                }));
-        }
-
         match tab {
             Tab::Homepage => homepage::new_element(),
-            Tab::Debug => unreachable!(),
+            Tab::Debug => cmp::div(),
         }
         .class_typed::<Page>(css::style!(
             .& {

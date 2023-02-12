@@ -26,17 +26,7 @@ pub struct Config {
 }
 
 pub static CONFIG: Lazy<Config> = Lazy::new(|| toml::from_str(include_str!("../../Config.toml")).expect("failed to parse config"));
-// pub static REQWEST_CLIENT: Lazy<reqwest::Client> = Lazy::new(reqwest::Client::new);
-
-pub trait IntoResOpt: Sized {
-    fn into_ok<E>(self) -> Result<Self, E>;
-    fn into_some(self) -> Option<Self>;
-}
-
-impl<T> IntoResOpt for T {
-    fn into_ok<E>(self) -> Result<Self, E> { Ok(self) }
-    fn into_some(self) -> Option<Self> { Some(self) }
-}
+pub static REQWEST_CLIENT: Lazy<reqwest::Client> = Lazy::new(reqwest::Client::new);
 
 #[allow(dead_code)]
 pub fn spawn_complain<T>(x: impl Future<Output = anyhow::Result<T>> + 'static) {
