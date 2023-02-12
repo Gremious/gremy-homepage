@@ -10,7 +10,7 @@ pub enum Tab {
 	#[default]
     Homepage,
 	// #[default]
-    Debug,
+    // Debug,
 }
 
 pub struct Root;
@@ -32,7 +32,7 @@ impl Page {
     pub fn new_element(tab: Tab) -> e::Div {
         match tab {
             Tab::Homepage => homepage::new_element(),
-            Tab::Debug => e::div(),
+            // Tab::Debug => e::div(),
         }
         .class_typed::<Page>(css::style!(
             .& {

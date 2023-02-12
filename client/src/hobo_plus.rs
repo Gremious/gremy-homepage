@@ -36,6 +36,7 @@ pub trait AsElementExt: AsElement {
 		self.get_cmp::<web_sys::Element>().get_bounding_client_rect().left()
 	}
 
+	#[must_use]
 	fn font(self, style: &css::Style) -> Self {
 		self.class_typed::<FontTag>(style.clone())
 	}
