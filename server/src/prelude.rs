@@ -11,7 +11,6 @@ pub struct Config {
     pub http_port: u16,
     pub https_port: u16,
     pub https: bool,
-    pub salt: String,
     pub ssl: SslConfig,
 }
 

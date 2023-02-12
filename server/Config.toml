@@ -1,9 +1,7 @@
 http_port = 80
 https_port = 443
-https = true
-salt = "salt"
+https = false
 
 [ssl]
 cert = "C:/Certbot/live/gremy.co.uk/fullchain.pem"
 key = "C:/Certbot/live/gremy.co.uk/privkey.pem"
-
