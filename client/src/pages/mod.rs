@@ -26,7 +26,7 @@ pub struct Page;
 impl Page {
     pub fn tab_page(tab: Tab) -> e::Div {
         match tab {
-            Tab::Homepage => homepage::new_element(),
+            Tab::Homepage => homepage::new(),
             // Tab::Debug => e::div(),
         }
         .class_typed::<Page>(css::style!(
