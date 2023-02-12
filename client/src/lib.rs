@@ -15,9 +15,9 @@
 
 mod prelude;
 mod style;
-mod windows;
-pub mod hobo_plus;
-mod benches;
+mod pages;
+mod hobo_plus;
+// mod benches;
 
 use prelude::*;
 
@@ -28,13 +28,13 @@ pub fn main() {
 
     wasm_bindgen_futures::spawn_local(async {
         log::info!("Main Thread Spawned");
-        Resource::register_resource(Mutable::new(windows::Tab::default()));
+        Resource::register_resource(Mutable::new(pages::Tab::default()));
 
-        let body = web_sys::window().unwrap().document().unwrap().body().unwrap();
+        let body = document().body().unwrap();
         body.set_inner_html("");
-        let hobo_body = e::Body(hobo::create::html_element(&body));
-		hobo_body.set_class(style::style());
 
-        hobo_body.add_child(windows::Root::new_element());
+		e::Body(hobo::create::html_element(&body))
+			.class(style::style())
+			.add_child(pages::body());
     });
 }
