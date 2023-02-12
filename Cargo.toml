@@ -7,10 +7,10 @@ members = [
 ]
 
 [patch.crates-io]
-hobo = { path = "client/hobo/lib" }
-hobo_derive = { path = "client/hobo/derive" }
-hobo_css = { path = "client/hobo/css" }
-hobo_css_macros = { path = "client/hobo/css/macros" }
+hobo = { path = "hobo/hobo" }
+hobo_derive = { path = "hobo/hobo_derive" }
+hobo_css = { path = "hobo/hobo_css" }
+hobo_css_macros = { path = "hobo/hobo_css_macros" }
 
 [profile.release]
 opt-level = "z"

@@ -36,14 +36,14 @@ impl Page {
                     web_sys::console::time_with_label("benchmark");
 
                     for i in 0..15 {
-                        let ele = SomeElement(element.get_cmp::<Children>()[0]);
+                        let ele = Element(element.get_cmp::<Children>()[0]);
                         ele.replace_with(debug::new_element_classes());
                         log::debug!("{}", i);
                     }
 
                     web_sys::console::time_end_with_label("benchmark");
-                    let perf = web_sys::window().expect("should have a window").performance().expect("should have performance").now();
-                    log::debug!("perf: {:#?}", perf);
+                    // let perf = web_sys::window().expect("should have a window").performance().expect("should have performance").now();
+                    // log::debug!("perf: {:#?}", perf);
                 }));
         }
 

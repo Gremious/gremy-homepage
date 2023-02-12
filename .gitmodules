@@ -1,4 +1,3 @@
 [submodule "hobo"]
-	path = client/hobo
+	path = hobo
 	url = git@github.com:GRDigital/hobo.git
-	branch = entity-based-prototype

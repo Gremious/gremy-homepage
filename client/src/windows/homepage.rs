@@ -67,33 +67,30 @@ pub fn new_element() -> cmp::Div {
         )
         .child(cmp::div()
             .class(image_style())
-            .with_on_mouse_down(move |&element, mouse_event| {
-                element.set_class_tagged("Cursor", css::class!(css::Cursor::Grabbing));
-                *element.get_cmp_mut::<Clicked>() = Clicked(true);
-            })
-            .with_on_mouse_up(move |&element, _| {
-                element.set_class_tagged("Cursor", css::class!(css::Cursor::Auto));
-                element.get_cmp_mut::<Clicked>().0 = false;
-            })
-            .with_on_mouse_leave(move |&element, _| {
-                element.set_class_tagged("Cursor", css::class!(css::Cursor::Auto));
-                element.get_cmp_mut::<Clicked>().0 = false;
-            })
-            .with_on_mouse_move(move |&element, mouse_event| {
+			.tap(|&element| element.add_on_mouse_down(move |_| {
+				element.set_class_tagged("Cursor", css::class!(css::Cursor::Grabbing));
+				*element.get_cmp_mut::<Clicked>() = Clicked(true);
+			}))
+			.tap(|&element| element.add_on_mouse_up(move |_| {
+				element.set_class_tagged("Cursor", css::class!(css::Cursor::Auto));
+				element.get_cmp_mut::<Clicked>().0 = false;
+			}))
+			.tap(|&element| element.add_on_mouse_leave(move |_| {
+				element.set_class_tagged("Cursor", css::class!(css::Cursor::Auto));
+				element.get_cmp_mut::<Clicked>().0 = false;
+			}))
+            .tap(|&element| element.add_on_mouse_move(move |mouse_event| {
                 if element.get_cmp::<Clicked>().0 {
-                    let image_rect = element.get_cmp::<web_sys::HtmlElement>().get_bounding_client_rect();
-                    let (image_top, image_left) = (image_rect.y(), image_rect.x());
                     let (move_y, move_x) = (mouse_event.movement_y(), mouse_event.movement_x());
-
-                    let top = image_top + move_y as f64;
-                    let left = image_left + move_x as f64;
+                    let top = element.top() + f64::from(move_y);
+                    let left = element.left() + f64::from(move_x);
 
                     element.set_style((
                         css::top!(top),
                         css::left!(left),
                     ));
                 }
-            })
+            }))
             .component(Clicked(false))
         )
 }
@@ -101,7 +98,7 @@ pub fn new_element() -> cmp::Div {
 
 pub fn fade_in_typewriter_animated_text(text: String) -> cmp::Div {
     cmp::div()
-        .children(text.chars().enumerate().map(|(i, c)| {
+        .children(text.chars().enumerate().map(|(i, c)| -> cmp::Span {
             cmp::span()
                 .text(c.to_string())
                 .class((
