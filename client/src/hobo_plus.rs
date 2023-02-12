@@ -1,5 +1,8 @@
 use super::*;
 
+#[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
+pub struct FontTag;
+
 pub trait AsElementExt: AsElement {
 	// client_rect.width()/.height() are with padding + border
 	// use client_width() for with padding but no borders/margins/etc
@@ -31,6 +34,10 @@ pub trait AsElementExt: AsElement {
 	#[inline]
 	fn left(&self) -> f64 {
 		self.get_cmp::<web_sys::Element>().get_bounding_client_rect().left()
+	}
+
+	fn font(self, style: &css::Style) -> Self {
+		self.class_typed::<FontTag>(style.clone())
 	}
 }
 

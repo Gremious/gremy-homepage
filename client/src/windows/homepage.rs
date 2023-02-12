@@ -1,5 +1,3 @@
-// TODO: Separate, maybe more global mobile style, potentially based on just global tags, or on styles like the font?
-
 use super::*;
 
 struct Clicked(bool);
@@ -57,11 +55,10 @@ pub fn new_element() -> e::Div {
         .class(container_style())
         .child(e::div()
             .class(text_style())
-            // .mark::<text::space_mono::TagBig>()
-            .class_typed::<text::FontTag>(text::space_mono::BIG.clone())
+			.font(&text::space_mono::BIG)
             .child(e::div()
                 .class(css::Display::Flex)
-                .child(fade_in_typewriter_animated_text("Hello.".to_owned()))
+                .child(fade_in_typewriter_animated_text("Hello."))
                 .child(blinking_caret())
             )
         )
@@ -95,8 +92,8 @@ pub fn new_element() -> e::Div {
         )
 }
 
-
-pub fn fade_in_typewriter_animated_text(text: String) -> e::Div {
+#[allow(clippy::cast_precision_loss)]
+pub fn fade_in_typewriter_animated_text(text: &str) -> e::Div {
     e::div()
         .children(text.chars().enumerate().map(|(i, c)| -> e::Span {
             e::span()
