@@ -5,23 +5,26 @@ pub struct FontTag;
 pub mod alfa_slab_one {
     use super::*;
 
-    pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
-        css::properties! {
-            css::font_family!("Alfa Slab One"),
-            css::font_weight!(400),
-        }
+    pub static BODY: Lazy<css::Style> = Lazy::new(|| {
+        css::style!(
+			.& {
+				css::font_family!("Alfa Slab One"),
+				css::font_weight!(400),
+			}
+        )
     });
 }
 
 pub mod space_mono {
     use super::*;
 
-    pub struct TagBody;
-    pub static BODY: Lazy<Vec<css::Property>> = Lazy::new(|| {
-        css::properties! {
-            css::font_family!("Space Mono"),
-            css::font_weight!(400),
-        }
+    pub static BODY: Lazy<css::Style> = Lazy::new(|| {
+		css::style!(
+			.& {
+				css::font_family!("Space Mono"),
+				css::font_weight!(400),
+			}
+		)
     });
 
     pub static BIG: Lazy<css::Style> = Lazy::new(|| {

@@ -1,11 +1,92 @@
 use super::*;
 
+// TODO: Re-write animation using hobo macros
+
+// TODO: Easter eggs
+// - Hide something behind lain image.
+// - Type "hi" - type out smiley face to hello text e.g. "Hello :)_"
+// - Type "hello" - secret item fly-in?
+//
+
 struct Clicked(bool);
 
 pub fn new() -> e::Div {
 	container()
-		.child(hello_header())
 		.child(lain_image())
+		.child(hello_header())
+		.child(homepage_nav())
+}
+
+fn homepage_nav() -> e::Ul {
+	e::ul()
+		.class(css::style!(
+			.& {
+				css::list_style_position!(inside),
+				css::line_height!(2.),
+				css::width!(min-content),
+				"list-style-type: \"– \";",
+			}
+
+			raw("@keyframes fade-in-left") {"
+				0% {
+					-webkit-transform: translateX(-100px);
+				}
+
+				100% {
+		            -webkit-transform: translateX(0);
+				}
+			"}
+		))
+		.child(button("item").style(css::animation_delay!(100 ms)))
+		.child(button("item").style(css::animation_delay!(200 ms)))
+		.child(button("item").style(css::animation_delay!(300 ms)))
+}
+
+
+fn button(text: &str) -> e::Li {
+	e::li()
+		.font(&text::space_mono::BODY)
+		.class(css::style!(
+			.& {
+				css::user_select!(none),
+				css::color!(css::color::WHITE),
+				css::animation_name!("fade-in-left"),
+				css::animation_duration!(500 ms),
+				css::animation_timing_function!("cubic-bezier(.22,.61,.36,1)"),
+				css::animation_fill_mode!(both),
+				// You make a text shadow stronger... by setting it twice...
+				css::TextShadow::Some(vec![
+					css::TextShadowEffect {
+						color: css::color::BLACK,
+						offset_x: css::unit!(2 px),
+						offset_y: css::unit!(2 px),
+						blur_radius: css::unit!(1 px),
+					},
+					css::TextShadowEffect {
+						color: css::color::BLACK,
+						offset_x: css::unit!(2 px),
+						offset_y: css::unit!(2 px),
+						blur_radius: css::unit!(1 px),
+					},
+				]),
+			}
+
+			.&:hover {
+				css::cursor!(pointer),
+				css::color!(css::color::WHEAT),
+			}
+
+			.&:active {
+				css::color!(css::color::WHITE),
+			}
+		))
+		.child(e::span()
+			.text(text)
+			.class((
+				css::text_decoration_line!(underline),
+				"text-underline-offset: 0.25em;",
+			))
+		)
 }
 
 fn container() -> e::Div {
@@ -33,7 +114,7 @@ fn hello_header() -> e::Div {
 		.class(css::style!(
 			.& {
 				css::color!(css::color::WHITE),
-				css::z_index!(100),
+				"text-shadow: 2px 2px 1px black;",
 			}
 
 			raw("@keyframes writing") {
@@ -102,6 +183,7 @@ fn lain_image() -> e::Div {
 				let (move_y, move_x) = (mouse_event.movement_y(), mouse_event.movement_x());
 				let left = element.left() + f64::from(move_x);
 				let top = element.top() + f64::from(move_y);
+
 				element.set_style((css::top!(top), css::left!(left)));
 			}
 		}))
