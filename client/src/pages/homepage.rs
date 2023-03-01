@@ -141,7 +141,9 @@ fn homepage_nav() -> e::Ul {
 				}
 			"}
 		))
-		.child(button("stream").style(css::animation_delay!(100 ms)))
+		.child(button("stream").style(css::animation_delay!(100 ms))
+			.on_click(|_| (*super::TabState::resource()).set_neq(super::Tab::Stream))
+		)
 		.child(button("item").style(css::animation_delay!(200 ms)))
 		.child(button("item").style(css::animation_delay!(300 ms)))
 }
