@@ -105,7 +105,6 @@ async fn main() -> anyhow::Result<()> {
 			.service(actix_files::Files::new("/public", "public").show_files_listing())
 			.default_service(web::route().to(reply))
 	})
-<<<<<<< Updated upstream
 	// .bind(format!("0.0.0.0:{}", CONFIG.http_port))?
 	// .bind(format!("[::]:{}", CONFIG.http_port))?
 	.bind_rustls(format!("[::]:{}", CONFIG.https_port), {
@@ -127,50 +126,5 @@ async fn main() -> anyhow::Result<()> {
 			.with_no_client_auth()
 			.with_single_cert(cert_chain, keys.remove(0))?
 	})?
-||||||| Stash base
-	.bind(format!("[::]:{}", CONFIG.http_port))?
-	// .bind_rustls(format!("[::]:{}", CONFIG.https_port), {
-	//     let cert_file = &mut BufReader::new(File::open(&CONFIG.ssl.cert)?);
-	//     let key_file = &mut BufReader::new(File::open(&CONFIG.ssl.key)?);
-    //
-	//     let cert_chain = certs(cert_file).ok().context("no certs")?.into_iter()
-	//         .map(rustls::Certificate)
-	//         .collect::<Vec<_>>();
-    //
-	//     let mut keys = pkcs8_private_keys(key_file).ok().context("no private keys")?.into_iter()
-	//         .map(rustls::PrivateKey)
-	//         .collect::<Vec<_>>();
-    //
-	//     rustls::ServerConfig::builder()
-	//         .with_cipher_suites(rustls::DEFAULT_CIPHER_SUITES)
-	//         .with_safe_default_kx_groups()
-	//         .with_protocol_versions(rustls::DEFAULT_VERSIONS)?
-	//         .with_no_client_auth()
-	//         .with_single_cert(cert_chain, keys.remove(0))?
-	// })?
-=======
-	.bind(format!("localhost:{}", CONFIG.http_port))?
-	// .bind(format!("[::]:{}", CONFIG.http_port))?
-	// .bind(format!("0.0.0.0:{}", CONFIG.http_port))?
-	// .bind_rustls(format!("[::]:{}", CONFIG.https_port), {
-	//     let cert_file = &mut BufReader::new(File::open(&CONFIG.ssl.cert)?);
-	//     let key_file = &mut BufReader::new(File::open(&CONFIG.ssl.key)?);
-    //
-	//     let cert_chain = certs(cert_file).ok().context("no certs")?.into_iter()
-	//         .map(rustls::Certificate)
-	//         .collect::<Vec<_>>();
-    //
-	//     let mut keys = pkcs8_private_keys(key_file).ok().context("no private keys")?.into_iter()
-	//         .map(rustls::PrivateKey)
-	//         .collect::<Vec<_>>();
-    //
-	//     rustls::ServerConfig::builder()
-	//         .with_cipher_suites(rustls::DEFAULT_CIPHER_SUITES)
-	//         .with_safe_default_kx_groups()
-	//         .with_protocol_versions(rustls::DEFAULT_VERSIONS)?
-	//         .with_no_client_auth()
-	//         .with_single_cert(cert_chain, keys.remove(0))?
-	// })?
->>>>>>> Stashed changes
 	.run().await?)
 }
