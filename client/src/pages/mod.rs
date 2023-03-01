@@ -15,6 +15,13 @@ pub enum Tab {
 }
 
 impl Tab {
+	pub fn is_local(&self) -> bool {
+		match &self {
+			Tab::Homepage => true,
+			Tab::Stream => false,
+		}
+	}
+
 	#[must_use]
 	pub fn to_url(self) -> String {
 		let base = format!("https://{}", shared::CONFIG.hostname);
@@ -47,21 +54,23 @@ impl Tab {
 }
 
 pub fn body() -> e::Div {
+	let page = e::div();
+
 	e::div()
 		.class((css::Display::Flex, css::min_height!(100 vh)))
 		.child(e::div()
 			.class((css::Display::Flex, css::FlexDirection::Column, css::width!(100%)))
-			.child_signal(TabState::resource().signal().dedupe().map(|current_tab| {
+			.component(TabState::resource().signal().dedupe().subscribe(move |current_tab| {
 				let new_url = current_tab.to_url();
 				if window().location().href().unwrap_or_default() != new_url {
 					window().location().assign(&new_url).ok();
-					// this would make it sick to this wasm client,
-					// but we actually want a full navigation away from this server.
-					// window().history().ok().and_then(|x| x.push_state_with_url(&JsValue::NULL, "", Some(&new_url)).ok());
 				}
 
-				Page::tab_page(current_tab)
+				if current_tab.is_local() {
+					page.replace_with(Page::tab_page(current_tab));
+				}
 			}))
+			.child(page)
 		)
 }
 
@@ -70,7 +79,7 @@ impl Page {
     pub fn tab_page(tab: Tab) -> Element {
         match tab {
             Tab::Homepage => homepage::new().as_element(),
-            Tab::Stream => e::div().as_element(),
+            Tab::Stream => unreachable!(),
             // Tab::Debug => e::div(),
         }
         .class_typed::<Page>(css::style!(
