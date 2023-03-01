@@ -16,7 +16,7 @@ pub enum Tab {
 
 impl Tab {
 	#[must_use]
-	pub fn to_url(&self) -> String {
+	pub fn to_url(self) -> String {
 		let base = format!("https://{}", shared::CONFIG.hostname);
 		let Ok(mut base_url) = url::Url::parse(&base) else { return base; };
 		let Ok(mut segments) = base_url.path_segments_mut() else { return base; };
@@ -29,6 +29,21 @@ impl Tab {
 		drop(segments);
 		base_url.to_string()
 	}
+
+	#[must_use]
+	pub fn from_url() -> Self {
+		let url = window().location().href().ok().and_then(|x| url::Url::parse(&x).ok());
+		let Some(segments) = url.as_ref()
+			.and_then(url::Url::path_segments)
+			.map(|iter| iter.map(|x| url::form_urlencoded::parse(x.as_bytes()).next().map(|x| x.0.into_owned()).unwrap_or(x.to_owned())).collect::<Vec<_>>())
+			else { return Tab::default(); };
+		let mut segments = segments.iter().map(|x| x as &str);
+
+		match segments.next() {
+			Some("stream") => Tab::Stream,
+			_ => Tab::Homepage,
+		}
+	}
 }
 
 pub fn body() -> e::Div {
@@ -39,7 +54,10 @@ pub fn body() -> e::Div {
 			.child_signal(TabState::resource().signal().dedupe().map(|current_tab| {
 				let new_url = current_tab.to_url();
 				if window().location().href().unwrap_or_default() != new_url {
-					window().history().ok().and_then(|x| x.push_state_with_url(&JsValue::NULL, "", Some(&new_url)).ok());
+					window().location().assign(&new_url).ok();
+					// this would make it sick to this wasm client,
+					// but we actually want a full navigation away from this server.
+					// window().history().ok().and_then(|x| x.push_state_with_url(&JsValue::NULL, "", Some(&new_url)).ok());
 				}
 
 				Page::tab_page(current_tab)

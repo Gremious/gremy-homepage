@@ -28,7 +28,7 @@ pub fn main() {
 
     wasm_bindgen_futures::spawn_local(async {
         log::info!("Main Thread Spawned");
-        Resource::register_resource(Mutable::new(pages::Tab::default()));
+        Resource::register_resource(Mutable::new(pages::Tab::from_url()));
 
         let body = document().body().unwrap();
         body.set_inner_html("");
