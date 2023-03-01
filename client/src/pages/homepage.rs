@@ -1,3 +1,5 @@
+use shared::{spawn_complain, REQWEST_CLIENT};
+
 use super::*;
 
 // TODO: Re-write animation using hobo macros
@@ -6,7 +8,7 @@ use super::*;
 // - Hide something behind lain image.
 // - Type "hi" - type out smiley face to hello text e.g. "Hello :)_"t
 // - Type "hello" - secret item fly-in?
-//
+// - Template page lol
 
 struct Clicked(bool);
 
