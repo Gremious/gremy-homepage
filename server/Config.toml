@@ -1,7 +1,10 @@
 http_port = 80
-https_port = 443
-https = false
+# https_port = 443
+https_port = 3120
+https = true
 
 [ssl]
-cert = "C:/Certbot/live/gremy.co.uk/fullchain.pem"
-key = "C:/Certbot/live/gremy.co.uk/privkey.pem"
+cert = "/etc/letsencrypt/live/gremy.co.uk/fullchain.pem"
+key = "/etc/letsencrypt/live/gremy.co.uk/privkey.pem"
+# cert = "C:/Certbot/live/gremy.co.uk/fullchain.pem"
+# key = "C:/Certbot/live/gremy.co.uk/privkey.pem"
