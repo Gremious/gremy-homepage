@@ -125,9 +125,10 @@ fn homepage_nav() -> e::Ul {
 	e::ul()
 		.class(css::style!(
 			.& {
+				css::z_index!(2),
 				css::list_style_position!(inside),
 				css::line_height!(2.),
-				css::width!(min-content),
+				css::width!(max-content),
 				"list-style-type: \"– \";",
 			}
 
@@ -141,8 +142,8 @@ fn homepage_nav() -> e::Ul {
 				}
 			"}
 		))
-		.child(button("stream").style(css::animation_delay!(100 ms))
-			.on_click(|_| (*super::TabState::resource()).set_neq(super::Tab::Stream))
+		.child(e::a().href("/stream")
+			.child(button("stream").style(css::animation_delay!(100 ms)))
 		)
 		.child(button("item").style(css::animation_delay!(200 ms)))
 		.child(button("item").style(css::animation_delay!(300 ms)))

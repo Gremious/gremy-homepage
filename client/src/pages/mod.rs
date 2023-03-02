@@ -8,20 +8,10 @@ pub type TabState = Mutable<Tab>;
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, SmartDefault)]
 pub enum Tab {
 	#[default]
-    Homepage,
-	Stream,
-	// #[default]
-    // Debug,
+	Homepage,
 }
 
 impl Tab {
-	pub fn is_local(&self) -> bool {
-		match &self {
-			Tab::Homepage => true,
-			Tab::Stream => false,
-		}
-	}
-
 	#[must_use]
 	pub fn to_url(self) -> String {
 		let base = format!("https://{}", shared::CONFIG.hostname);
@@ -30,7 +20,6 @@ impl Tab {
 
 		match self {
 			Tab::Homepage => {},
-			Tab::Stream => { segments.push("stream"); },
 		};
 
 		drop(segments);
@@ -47,30 +36,19 @@ impl Tab {
 		let mut segments = segments.iter().map(|x| x as &str);
 
 		match segments.next() {
-			Some("stream") => Tab::Stream,
 			_ => Tab::Homepage,
 		}
 	}
 }
 
 pub fn body() -> e::Div {
-	let page = e::div();
-
 	e::div()
 		.class((css::Display::Flex, css::min_height!(100 vh)))
 		.child(e::div()
 			.class((css::Display::Flex, css::FlexDirection::Column, css::width!(100%)))
-			.component(TabState::resource().signal().dedupe().subscribe(move |current_tab| {
-				let new_url = current_tab.to_url();
-				if window().location().href().unwrap_or_default() != new_url {
-					window().location().assign(&new_url).ok();
-				}
-
-				if current_tab.is_local() {
-					page.replace_with(Page::tab_page(current_tab));
-				}
+			.child_signal(TabState::resource().signal().map(|current_tab| {
+				Page::tab_page(current_tab)
 			}))
-			.child(page)
 		)
 }
 
@@ -79,7 +57,6 @@ impl Page {
     pub fn tab_page(tab: Tab) -> Element {
         match tab {
             Tab::Homepage => homepage::new().as_element(),
-            Tab::Stream => unreachable!(),
             // Tab::Debug => e::div(),
         }
         .class_typed::<Page>(css::style!(
