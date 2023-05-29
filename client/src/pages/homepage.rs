@@ -94,7 +94,7 @@ fn hello_header() -> e::Div {
 		))
 		.child(e::div()
 			.font(&text::space_mono::BIG)
-			.class(css::Display::Flex)
+			.class((css::Display::Flex, css::user_select!(none)))
 			.child(fade_in_typewriter_animated_text("Hello."))
 			.child(blinking_caret())
 		)
@@ -142,7 +142,10 @@ fn homepage_nav() -> e::Ul {
 				}
 			"}
 		))
-		.child(e::a().href("/stream")
+		.child(e::a().href("https://home.gremy.co.uk")
+			.child(button("home").style(css::animation_delay!(100 ms)))
+		)
+		.child(e::a().href("https://stream.gremy.co.uk")
 			.child(button("stream").style(css::animation_delay!(100 ms)))
 		)
 		.child(button("item").style(css::animation_delay!(200 ms)))
