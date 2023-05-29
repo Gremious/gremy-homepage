@@ -1,3 +1,6 @@
 [submodule "hobo"]
 	path = hobo
 	url = git@github.com:GRDigital/hobo.git
+[submodule "OvenPlayer"]
+	path = OvenPlayer
+	url = https://github.com/AirenSoft/OvenPlayer.git

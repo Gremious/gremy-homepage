@@ -1,5 +1,5 @@
 use shared::{spawn_complain, REQWEST_CLIENT};
-
+use serde::{Deserialize, Serialize};
 use super::*;
 
 // TODO: Re-write animation using hobo macros
@@ -17,8 +17,62 @@ pub fn new() -> e::Div {
 		.child(lain_image())
 		.child(hello_header())
 		.child(homepage_nav())
+		.child(media_player())
 }
 
+#[derive(Serialize, Deserialize)]
+struct Options {
+	title: String,
+	sources: Vec<Source>,
+}
+
+impl Default for Options {
+	fn default() -> Self {
+		Self {
+			title: "gremy player".to_owned(),
+			sources: vec![
+				Source {
+					label: String::from("Default"),
+					stream_type: String::from("webrtc"),
+					file: String::from("wss://stream.gremy.co.uk:3334/app/stream"),
+				}
+			],
+		}
+	}
+}
+
+#[derive(Serialize, Deserialize)]
+struct Source {
+	label: String,
+	#[serde(rename = "type")]
+	stream_type: String,
+	file: String,
+}
+
+#[wasm_bindgen]
+extern "C" {
+	#[wasm_bindgen(js_name = OvenPlayer)]
+	pub type Player;
+
+	#[wasm_bindgen(constructor, js_class = create, js_namespace = OvenPlayer)]
+	fn create(player_div_id: &str, options: JsValue) -> Player;
+}
+
+fn media_player() -> e::Div {
+	let load_state = crate::OvenPlayerLoaded::resource_or_default();
+
+	e::div().class((css::width!(1280 px), css::height!(720 px)))
+		.child(e::div()
+			.id("main_player")
+		)
+		.with_component(move |&element| load_state.signal().subscribe(move |loaded| {
+ 			if !loaded { return; }
+			element
+				.tap(|_| {
+					Player::create("main_player", serde_wasm_bindgen::to_value(&Options::default()).unwrap());
+				});
+		}))
+}
 fn container() -> e::Div {
 	e::div()
 		.class(css::style!(
@@ -146,10 +200,13 @@ fn homepage_nav() -> e::Ul {
 			.child(button("home").style(css::animation_delay!(100 ms)))
 		)
 		.child(e::a().href("https://stream.gremy.co.uk")
-			.child(button("stream").style(css::animation_delay!(100 ms)))
+			.child(button("stream").style(css::animation_delay!(200 ms)))
 		)
-		.child(button("item").style(css::animation_delay!(200 ms)))
-		.child(button("item").style(css::animation_delay!(300 ms)))
+		.child(e::a().href("https://github.com/Gremious")
+			.child(button("github").style(css::animation_delay!(300 ms)))
+		)
+		.child(button("item").style(css::animation_delay!(400 ms)))
+		.child(button("item").style(css::animation_delay!(500 ms)))
 }
 
 

@@ -13,6 +13,7 @@ pub use smart_default::SmartDefault;
 pub use std::cell::RefCell;
 pub use std::rc::Rc;
 pub use wasm_bindgen_futures::spawn_local as spawn;
+pub use shrinkwraprs::Shrinkwrap;
 
 pub fn window() -> web_sys::Window { web_sys::window().expect("no window") }
 pub fn document() -> web_sys::Document { window().document().expect("no document") }

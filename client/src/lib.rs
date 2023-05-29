@@ -21,20 +21,31 @@ mod hobo_plus;
 
 use prelude::*;
 
+#[derive(Shrinkwrap)]
+#[shrinkwrap(mutable)]
+#[derive(Debug, Default)]
+pub struct OvenPlayerLoaded(pub Mutable<bool>);
+
 #[wasm_bindgen(start)]
 pub fn main() {
-    wasm_logger::init(wasm_logger::Config::default());
-    console_error_panic_hook::set_once();
+	wasm_logger::init(wasm_logger::Config::default());
+	console_error_panic_hook::set_once();
 
-    wasm_bindgen_futures::spawn_local(async {
-        log::info!("Main Thread Spawned");
-        Resource::register_resource(Mutable::new(pages::Tab::from_url()));
+	wasm_bindgen_futures::spawn_local(async {
+		log::info!("Main Thread Spawned");
+		Resource::register_resource(Mutable::new(pages::Tab::from_url()));
 
-        let body = document().body().unwrap();
-        body.set_inner_html("");
+		let body = document().body().unwrap();
+		body.set_inner_html("");
 
 		e::Body(hobo::create::html_element(&body))
 			.class(style::style())
-			.add_child(pages::body());
-    });
+			.child(e::script()
+				.attr(web_str::r#type(), "text/javascript")
+				.src("../public/ovenplayer.js")
+				.bool_attr(web_str::r#async(), true)
+				.on_load(move |_| OvenPlayerLoaded::resource_or_default().0.set_neq(true))
+			)
+			.add_child(pages::body())
+	});
 }
