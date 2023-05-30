@@ -32,7 +32,7 @@ impl Default for Options {
 			title: "gremy player".to_owned(),
 			sources: vec![
 				Source {
-					label: String::from("Default"),
+					label: String::from("bypass_stream"),
 					stream_type: String::from("webrtc"),
 					file: String::from("wss://stream.gremy.co.uk:3334/app/stream"),
 				}
@@ -199,8 +199,8 @@ fn homepage_nav() -> e::Ul {
 		.child(e::a().href("https://home.gremy.co.uk")
 			.child(button("home").style(css::animation_delay!(100 ms)))
 		)
-		.child(e::a().href("https://stream.gremy.co.uk")
-			.child(button("stream").style(css::animation_delay!(200 ms)))
+		.child(e::a().href("https://cloud.gremy.co.uk")
+			.child(button("cloud").style(css::animation_delay!(200 ms)))
 		)
 		.child(e::a().href("https://github.com/Gremious")
 			.child(button("github").style(css::animation_delay!(300 ms)))
