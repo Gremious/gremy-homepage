@@ -40,6 +40,7 @@ pub fn main() {
 
 		e::Body(hobo::create::html_element(&body))
 			.class(style::style())
+			.class(css::background_color!(colors::bg_black))
 			.child(e::script()
 				.attr(web_str::r#type(), "text/javascript")
 				.src("../public/ovenplayer.js")

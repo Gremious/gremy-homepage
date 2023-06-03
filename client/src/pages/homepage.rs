@@ -1,5 +1,4 @@
 use shared::{spawn_complain, REQWEST_CLIENT};
-use serde::{Deserialize, Serialize};
 use super::*;
 
 // TODO: Re-write animation using hobo macros
@@ -17,69 +16,8 @@ pub fn new() -> e::Div {
 		.child(lain_image())
 		.child(hello_header())
 		.child(homepage_nav())
-		.child(media_player())
 }
 
-#[derive(Serialize, Deserialize)]
-struct Options {
-	title: String,
-	sources: Vec<Source>,
-}
-
-impl Default for Options {
-	fn default() -> Self {
-		let config = String::from_utf8_lossy(include_bytes!("/home/gremious/.config/gremy-stream/config.conf"));
-
-		let (stream_name, stream_key) = config.lines().next().unwrap().split_once(';')
-			.expect("Put a 'stream name;stream key' as a config file in .config/gremy-stream/config.conf");
-
-		log::debug!("wss://stream.gremy.co.uk:3334/{stream_name}/{stream_key}");
-
-		Self {
-			title: "gremy player".to_owned(),
-			sources: vec![
-				Source {
-					label: String::from("bypass_stream"),
-					stream_type: String::from("webrtc"),
-					file: format!("wss://stream.gremy.co.uk:3334/{stream_name}/{stream_key}"),
-				}
-			],
-		}
-	}
-}
-
-#[derive(Serialize, Deserialize)]
-struct Source {
-	label: String,
-	#[serde(rename = "type")]
-	stream_type: String,
-	file: String,
-}
-
-#[wasm_bindgen]
-extern "C" {
-	#[wasm_bindgen(js_name = OvenPlayer)]
-	pub type Player;
-
-	#[wasm_bindgen(constructor, js_class = create, js_namespace = OvenPlayer)]
-	fn create(player_div_id: &str, options: JsValue) -> Player;
-}
-
-fn media_player() -> e::Div {
-	let load_state = crate::OvenPlayerLoaded::resource_or_default();
-
-	e::div().class((css::width!(1280 px), css::height!(720 px)))
-		.child(e::div()
-			.id("main_player")
-		)
-		.with_component(move |&element| load_state.signal().subscribe(move |loaded| {
- 			if !loaded { return; }
-			element
-				.tap(|_| {
-					Player::create("main_player", serde_wasm_bindgen::to_value(&Options::default()).unwrap());
-				});
-		}))
-}
 fn container() -> e::Div {
 	e::div()
 		.class(css::style!(
@@ -91,7 +29,6 @@ fn container() -> e::Div {
 				css::BoxSizing::BorderBox,
 				css::overflow!(hidden),
 				css::padding!(2.5%),
-				css::background_color!(colors::bg_black),
 			}
 
 			@media All && MaxWidth(css::unit!(500 px)) {
@@ -110,7 +47,6 @@ fn lain_image() -> e::Div {
 			css::height!(600 px),
 			css::BackgroundImage::Some(vec![css::Image::Url("../public/img/lain/small.webp".to_string())]),
 			css::BackgroundRepeat::NoRepeat,
-			css::background_color!(colors::bg_black),
 		))
 		.tap(|&element| element.add_on_mouse_down(move |_| {
 			element.set_class_tagged("Cursor", css::class!(css::Cursor::Grabbing));
@@ -206,14 +142,15 @@ fn homepage_nav() -> e::Ul {
 		.child(e::a().href("https://home.gremy.co.uk")
 			.child(button("home").style(css::animation_delay!(100 ms)))
 		)
-		.child(e::a().href("https://cloud.gremy.co.uk")
-			.child(button("cloud").style(css::animation_delay!(200 ms)))
+		.child(e::a().href("https://data.gremy.co.uk")
+			.child(button("data").style(css::animation_delay!(200 ms)))
+		)
+		.child(e::a().href("/stream")
+			.child(button("stream").style(css::animation_delay!(200 ms)))
 		)
 		.child(e::a().href("https://github.com/Gremious")
 			.child(button("github").style(css::animation_delay!(300 ms)))
 		)
-		.child(button("item").style(css::animation_delay!(400 ms)))
-		.child(button("item").style(css::animation_delay!(500 ms)))
 }
 
 

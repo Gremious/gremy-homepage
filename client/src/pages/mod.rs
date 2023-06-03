@@ -1,6 +1,7 @@
 use super::*;
 
 pub mod homepage;
+pub mod stream;
 pub mod debug;
 
 pub type TabState = Mutable<Tab>;
@@ -9,6 +10,8 @@ pub type TabState = Mutable<Tab>;
 pub enum Tab {
 	#[default]
 	Homepage,
+	Stream,
+	Debug,
 }
 
 impl Tab {
@@ -20,6 +23,8 @@ impl Tab {
 
 		match self {
 			Tab::Homepage => {},
+			Tab::Stream => { segments.push("stream"); },
+			Tab::Debug => { segments.push("debug"); },
 		};
 
 		drop(segments);
@@ -36,6 +41,8 @@ impl Tab {
 		let mut segments = segments.iter().map(|x| x as &str);
 
 		match segments.next() {
+			Some("stream") => Tab::Stream,
+			Some("debug") => Tab::Debug,
 			_ => Tab::Homepage,
 		}
 	}
@@ -57,7 +64,8 @@ impl Page {
     pub fn tab_page(tab: Tab) -> Element {
         match tab {
             Tab::Homepage => homepage::new().as_element(),
-            // Tab::Debug => e::div(),
+			Tab::Debug => debug::new().as_element(),
+			Tab::Stream => stream::new().as_element(),
         }
         .class_typed::<Page>(css::style!(
             .& {
