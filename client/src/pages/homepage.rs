@@ -28,13 +28,20 @@ struct Options {
 
 impl Default for Options {
 	fn default() -> Self {
+		let config = String::from_utf8_lossy(include_bytes!("/home/gremious/.config/gremy-stream/config.conf"));
+
+		let (stream_name, stream_key) = config.lines().next().unwrap().split_once(';')
+			.expect("Put a 'stream name;stream key' as a config file in .config/gremy-stream/config.conf");
+
+		log::debug!("wss://stream.gremy.co.uk:3334/{stream_name}/{stream_key}");
+
 		Self {
 			title: "gremy player".to_owned(),
 			sources: vec![
 				Source {
 					label: String::from("bypass_stream"),
 					stream_type: String::from("webrtc"),
-					file: String::from("wss://stream.gremy.co.uk:3334/app/stream"),
+					file: format!("wss://stream.gremy.co.uk:3334/{stream_name}/{stream_key}"),
 				}
 			],
 		}
