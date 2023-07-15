@@ -20,7 +20,6 @@ use wasm_bindgen_futures::spawn_local as spawn;
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    pub project_name: String,
     pub name: String,
     pub hostname: String,
 }
