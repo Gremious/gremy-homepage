@@ -18,9 +18,10 @@ impl Default for Options {
 			title: "gremy player".to_owned(),
 			sources: vec![
 				Source {
-					label: String::from("default-gremy"),
+					label: String::from("bypass_stream"),
 					stream_type: String::from("webrtc"),
-					file: format!("wss://stream.gremy.co.uk:3334/{stream_name}/{stream_key}"),
+					// file: format!("wss://stream.gremy.co.uk:3333/app/stream"),
+					file: format!("wss://stream.gremy.co.uk:3333/{stream_name}/{stream_key}"),
 				},
 			],
 		}

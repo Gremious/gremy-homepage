@@ -87,18 +87,18 @@ pub fn init_logger() {
 
 #[actix::main]
 async fn main() -> anyhow::Result<()> {
-	use actix_cors::Cors;
+	// use actix_cors::Cors;
 
 	init_logger();
 
 
 	Ok(HttpServer::new(|| {
-		let cors = Cors::permissive();
+		// let cors = Cors::permissive();
 
 		App::new()
 			.wrap(Logger::new("%s in %Ts, %b bytes \"%r\""))
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
-			.wrap(cors)
+			// .wrap(cors)
 			.service(web::resource("/favicon.ico").to(async || NamedFile::open("public/img/favicon/sparkling_heart.ico")))
 			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))
 			.service(web::resource("/robots.txt").to(async || NamedFile::open("public/robots.txt")))
