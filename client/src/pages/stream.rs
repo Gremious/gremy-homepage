@@ -9,10 +9,7 @@ struct Options {
 
 impl Default for Options {
 	fn default() -> Self {
-		let config = String::from_utf8_lossy(include_bytes!("/home/gremious/.config/gremy-stream/config.conf"));
-
-		let (stream_name, stream_key) = config.lines().next().unwrap().split_once(';')
-			.expect("Put a 'stream name;stream key' as a config file in .config/gremy-stream/config.conf");
+		let (stream_name, stream_key) = shared::CONFIG.stream_keys.get_key_value("gremy-default").expect("no gremy stream key?");
 
 		Self {
 			title: "gremy player".to_owned(),

@@ -12,16 +12,17 @@
 	clippy::wildcard_imports,
 )]
 
-use core::future::Future;
+pub mod prelude;
+use prelude::*;
 
-use once_cell::sync::Lazy;
-use serde::{Deserialize, Serialize};
+use core::future::Future;
 use wasm_bindgen_futures::spawn_local as spawn;
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {
-    pub name: String,
+	pub dev: bool,
     pub hostname: String,
+	pub stream_keys: HashMap<String, String>,
 }
 
 pub static CONFIG: Lazy<Config> = Lazy::new(|| toml::from_str(include_str!("../../Config.toml")).expect("failed to parse config"));

@@ -1,9 +1,9 @@
-http_port = 80
-# http_port = 63333
+# http_port = 80
+http_port = 63333
 # https_port = 443
 # https_port = 3120
 https_port = 63333
-https = true
+https = false
 
 [ssl]
 cert = "/etc/letsencrypt/live/gremy.co.uk/fullchain.pem"
