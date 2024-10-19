@@ -1,8 +1,10 @@
-use std::env;
+use std::{fmt::Display, io, process::ExitStatus};
+
 use clap::{Parser, Subcommand};
-use execute::{command, Execute};
+use execute::command;
 use shared::shared_prelude::*;
 
+static SSH: Lazy<String> = Lazy::new(|| shared::CONFIG.ssh.clone());
 
 #[derive(Parser)]
 #[command(bin_name = "cargo xtask")]
@@ -17,6 +19,9 @@ enum Command {
 		#[arg(short, long)] release: bool,
 	},
 	BuildClient {
+		#[arg(short, long)] release: bool,
+	},
+	BuildServer {
 		#[arg(short, long)] release: bool,
 	},
 	WatchClient,
@@ -63,19 +68,36 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 				"--debug target/wasm-target/wasm32-unknown-unknown/debug/client.wasm"
 			};
 
-		let wasm_bindgen = format!("wasm-bindgen --out-dir public/wasm --out-name code --target web --no-typescript --omit-imports --omit-default-module-path --reference-types {wasm_bindgen_params}");
+			let wasm_bindgen = format!("wasm-bindgen --out-dir public/wasm --out-name code --target web --no-typescript --omit-imports --omit-default-module-path --reference-types {wasm_bindgen_params}");
 			command(wasm_bindgen).status()?;
 
 			if release {
 				command("wasm-opt public/wasm/code_bg.wasm --enable-reference-types -o public/wasm/code_bg.wasm -Os").status()?;
 			}
 		},
+		Command::BuildServer { release } => {
+			command(format!("cargo build -p server{}", if release { " --release" } else { "" })).status()?;
+		},
 		Command::Build { release } => todo!(),
 		Command::WatchClient => todo!(),
 		Command::WatchServer => todo!(),
-		Command::Deploy => todo!(),
+		Command::Deploy => {
+			ssh_cmd("systemctl stop gremy-homepage")?;
+			ssh_cmd("mkdir /home/gremious/gremy-homepage")?;
+			scp_to_server("./public", "/home/gremious/gremy-homepage/public")?;
+			scp_to_server("./target/debug/server", "/home/gremious/gremy-homepage/server")?;
+			ssh_cmd("systemctl start gremy-homepage")?;
+		},
 	};
 
 	Ok(())
+}
+
+fn scp_to_server(from: impl Display + Sized, to: impl Display + Sized) -> io::Result<ExitStatus> {
+	command(format!("scp -Cr {from} {}:{to}", *SSH)).status()
+}
+
+fn ssh_cmd(cmd: impl std::fmt::Display) -> io::Result<ExitStatus> {
+	command(format!("ssh {} \"{cmd}\"", *SSH)).status()
 }
 
