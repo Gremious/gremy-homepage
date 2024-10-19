@@ -82,8 +82,17 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 			handle_command(Command::BuildClient { release })?;
 			handle_command(Command::BuildServer { release })?;
 		},
-		Command::WatchClient => todo!(),
+		Command::WatchClient => {
+			if command("watchexec --version").status().is_err() {
+				command("cargo install watchexec-cli").status()?;
+			}
+
+			let to_watch = [ "client", "shared", "server/response.html" ];
+			// TODO: Watchexec borken and just gives me permissoin denied :(
+		},
 		Command::WatchServer => todo!(),
+
+
 		Command::Deploy => {
 			handle_command(Command::Build { release: true })?;
 
