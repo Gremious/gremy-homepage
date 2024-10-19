@@ -30,7 +30,7 @@ async fn reply() -> HttpResponse {
 		let js = &std::fs::read_to_string("public/wasm/code.js").expect("couldn't find the js payload");
 		let js = minifier::js::minify(js);
 		let path = {
-			let hostname = if shared::CONFIG.dev { &format!("localhost:{}", shared::CONFIG.port) } else { &shared::CONFIG.hostname };
+			let hostname = if cfg!(debug_assertions) { &format!("localhost:{}", shared::CONFIG.port) } else { &shared::CONFIG.hostname };
 			format!("https://{hostname}/public/wasm/code_bg.wasm")
 		};
 
