@@ -35,18 +35,18 @@ pub fn main() {
 		log::info!("Main Thread Spawned");
 		Resource::register_resource(Mutable::new(pages::Tab::from_url()));
 
-		let body = document().body().unwrap();
-		body.set_inner_html("");
-
-		e::Body(hobo::create::html_element(&body))
+		document().body().unwrap()
+			.tap(|body| body.set_inner_html(""))
+			.pipe(|body| e::Body(e::html_element(&body)))
+			.allow_no_parent()
 			.class(style::style())
-			.class(css::background_color!(colors::bg_black))
+			.class(css::background_color::rgba(colors::bg_black))
 			.child(e::script()
 				.attr(web_str::r#type(), "text/javascript")
 				.src("../public/ovenplayer.js")
 				.bool_attr(web_str::r#async(), true)
 				.on_load(move |_| OvenPlayerLoaded::resource_or_default().0.set_neq(true))
 			)
-			.add_child(pages::body())
+			.add_child(pages::body());
 	});
 }

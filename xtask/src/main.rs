@@ -92,7 +92,6 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 		},
 		Command::WatchServer => todo!(),
 
-
 		Command::Deploy => {
 			handle_command(Command::Build { release: true })?;
 

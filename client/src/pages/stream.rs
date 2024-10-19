@@ -74,8 +74,8 @@ fn media_player() -> e::Div {
 
 	e::div()
 		.class((
-			css::width!(1280 px),
-			css::height!(720 px),
+			css::width::px(1280),
+			css::height::px(720),
 			// "background-image: repeating-linear-gradient(
 			//     -45deg,
 			//     transparent,
@@ -90,9 +90,9 @@ fn media_player() -> e::Div {
 				rgba(190, 25, 90, 0.5) 20px,
 				rgba(190, 25, 90, 0.5) 40px
 			);",
-			css::background_color!(css::color::BLACK),
-			css::resize!(both),
-			css::overflow!(auto),
+			css::background_color::rgba(css::colors::BLACK),
+			css::resize::both,
+			css::overflow::auto,
 		))
 		.child(e::div()
 			.id("main_player")

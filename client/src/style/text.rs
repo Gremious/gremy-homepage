@@ -8,8 +8,8 @@ pub mod alfa_slab_one {
     pub static BODY: Lazy<css::Style> = Lazy::new(|| {
         css::style!(
 			.& {
-				css::font_family!("Alfa Slab One"),
-				css::font_weight!(400),
+				css::font_family::Some(vec![String::from("Alfa Slab One")]),
+				css::font_weight::val(400),
 			}
         )
     });
@@ -21,8 +21,8 @@ pub mod space_mono {
     pub static BODY: Lazy<css::Style> = Lazy::new(|| {
 		css::style!(
 			.& {
-				css::font_family!("Space Mono"),
-				css::font_weight!(400),
+				css::font_family::Some(vec![String::from("Space Mono")]),
+				css::font_weight::val(400),
 			}
 		)
     });
@@ -30,9 +30,9 @@ pub mod space_mono {
     pub static BIG: Lazy<css::Style> = Lazy::new(|| {
         css::style!(
             .& {
-                css::font_family!("Space Mono"),
-                css::font_weight!(400),
-                css::font_size!(64 px),
+                css::font_family::Some(vec![String::from("Space Mono")]),
+                css::font_weight::val(400),
+                css::font_size::px(64),
             }
 
             // @media All && MaxWidth(css::unit!(500 px)) {

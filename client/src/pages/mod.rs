@@ -50,9 +50,9 @@ impl Tab {
 
 pub fn body() -> e::Div {
 	e::div()
-		.class((css::Display::Flex, css::min_height!(100 vh)))
+		.class((css::display::flex, css::min_height::vh(100)))
 		.child(e::div()
-			.class((css::Display::Flex, css::FlexDirection::Column, css::width!(100%)))
+			.class((css::display::flex, css::flex_direction::column, css::width::pct(100.)))
 			.child_signal(TabState::resource().signal().map(|current_tab| {
 				Page::tab_page(current_tab)
 			}))
@@ -69,7 +69,7 @@ impl Page {
         }
         .class_typed::<Page>(css::style!(
             .& {
-                css::size!(100%),
+                css::size::pct(100),
             }
         ))
     }

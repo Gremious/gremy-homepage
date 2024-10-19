@@ -13,9 +13,9 @@ pub mod element {
 
     pub static OVERFLOW_ELLIPSIS: Lazy<Vec<css::Property>> = Lazy::new(|| {
         css::properties! {
-            css::text_overflow!(ellipsis),
-            css::white_space!(nowrap),
-            css::overflow!(hidden),
+            css::text_overflow::ellipsis,
+            css::white_space::nowrap,
+            css::overflow::hidden,
         }
     });
 }
@@ -24,7 +24,7 @@ pub fn style() -> css::Style {
     fonts()
         + css::style! {
             html, body {
-                css::height!(100 vh),
+                css::height::vh(100),
             }
 
             body {
@@ -37,30 +37,30 @@ pub fn style() -> css::Style {
                 // css::Cursor::Auto,
             }
 
-            * {
-                css::margin!(0),
-                css::padding!(0),
-                css::border_width!(0),
-                css::border_style!(none),
-                css::border_color!(0),
-                css::outline_width!(0),
-                css::outline_color!(0),
+			* {
+				css::margin::zero,
+				css::padding::zero,
+				css::border_width::zero,
+				css::border_style::none,
+				css::border_color::none,
+				css::outline_width::zero,
+				css::outline_color::none,
 
-                css::color!(inherit),
-                css::FontSize::Inherit,
-                css::FontFamily::Inherit,
-                css::FontWeight::Inherit,
-                css::LineHeight::Inherit,
-                css::TextDecorationLine::Inherit,
-                css::WhiteSpace::Inherit,
+				css::color::inherit,
+				css::font_size::inherit,
+				css::font_family::inherit,
+				css::font_weight::inherit,
+				css::font_style::inherit,
+				css::line_height::inherit,
+				css::text_decoration_line::inherit,
+				css::white_space::inherit,
 
-                // css::Cursor::Inherit,
-                css::UserSelect::Inherit,
+				// css::cursor::inherit,
+				css::user_select::inherit,
 
-                css::BoxSizing::Initial,
-                css::AlignItems::Initial,
-                css::TextAlign::Inherit,
-                css::background_color!(initial),
-            }
+				css::box_sizing::border_box,
+				css::align_items::initial,
+				css::background_color::initial,
+			}
         }
 }
