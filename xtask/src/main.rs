@@ -78,14 +78,19 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 		Command::BuildServer { release } => {
 			command(format!("cargo build -p server{}", if release { " --release" } else { "" })).status()?;
 		},
-		Command::Build { release } => todo!(),
+		Command::Build { release } => {
+			handle_command(Command::BuildClient { release })?;
+			handle_command(Command::BuildServer { release })?;
+		},
 		Command::WatchClient => todo!(),
 		Command::WatchServer => todo!(),
 		Command::Deploy => {
+			handle_command(Command::Build { release: true })?;
+
 			ssh_cmd("systemctl stop gremy-homepage")?;
 			ssh_cmd("mkdir /home/gremious/gremy-homepage")?;
-			scp_to_server("./public", "/home/gremious/gremy-homepage/public")?;
-			scp_to_server("./target/debug/server", "/home/gremious/gremy-homepage/server")?;
+			scp_to_server("./public", "/home/gremious/gremy-homepage/")?;
+			scp_to_server("./target/release/server", "/home/gremious/gremy-homepage/server")?;
 			ssh_cmd("systemctl start gremy-homepage")?;
 		},
 	};
