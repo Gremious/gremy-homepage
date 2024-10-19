@@ -9,7 +9,10 @@ struct Options {
 
 impl Default for Options {
 	fn default() -> Self {
-		let (stream_name, stream_key) = shared::CONFIG.stream_keys.get_key_value("gremy-default").expect("no gremy stream key?");
+		let shared::Key {
+			name: stream_name,
+			pass: stream_key,
+		} = shared::CONFIG.stream_keys.iter().find(|x| &x.name == "gremy-default").expect("no gremy stream key?");
 
 		Self {
 			title: "gremy player".to_owned(),
@@ -44,7 +47,7 @@ extern "C" {
 
 pub fn new() -> e::Div {
 	container()
-		.child(media_player())
+		// .child(media_player())
 }
 
 fn container() -> e::Div {

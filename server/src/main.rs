@@ -12,7 +12,7 @@
 )]
 #![feature(try_blocks, async_closure, fn_traits, unboxed_closures)]
 
-use env_logger::fmt::style;
+use shared::shared_prelude::*;
 
 use actix_files::NamedFile;
 use actix_web::middleware::{Logger, NormalizePath, TrailingSlash};
@@ -24,26 +24,17 @@ use std::fs::File;
 use std::io::BufReader;
 use rustls_pemfile::{certs, pkcs8_private_keys};
 
-use prelude::*;
-
-mod prelude;
-
 #[allow(clippy::unused_async)]
 async fn reply() -> HttpResponse {
 	static REPLY: Lazy<String> = Lazy::new(|| {
-		let js = &std::fs::read_to_string("public/wasm/client.js").expect("couldn't find the js payload");
+		let js = &std::fs::read_to_string("public/wasm/code.js").expect("couldn't find the js payload");
 		let js = minifier::js::minify(js);
+		let path = {
+			let hostname = if shared::CONFIG.dev { &format!("localhost:{}", shared::CONFIG.port) } else { &shared::CONFIG.hostname };
+			format!("https://{hostname}/public/wasm/code_bg.wasm")
+		};
 
-		minify::html::minify(&format!(
-			include_str!("../response.html"),
-			js = js,
-			path = format!(
-				"http://localhost:63333/public/wasm/client_bg.wasm",
-				// if CONFIG.https { "https" } else { "http" },
-				// shared::CONFIG.hostname,
-				// if CONFIG.https { CONFIG.https_port } else { CONFIG.http_port }
-			)
-		))
+		minify::html::minify(&format!(include_str!("../response.html"), js = js, path = path))
 	});
 
 	HttpResponse::Ok().body(&REPLY as &str)
@@ -108,26 +99,26 @@ async fn main() -> anyhow::Result<()> {
 			.service(actix_files::Files::new("/public", "public").show_files_listing())
 			.default_service(web::route().to(reply))
 	})
-	.bind(format!("0.0.0.0:{}", CONFIG.http_port))?
+	// .bind(format!("0.0.0.0:{}", CONFIG.http_port))?
 	// .bind(format!("[::]:{}", CONFIG.http_port))?
-	// .bind_rustls(format!("[::]:{}", CONFIG.https_port), {
-		// let cert_file = &mut BufReader::new(File::open(&CONFIG.ssl.cert)?);
-		// let key_file = &mut BufReader::new(File::open(&CONFIG.ssl.key)?);
+	.bind_rustls(format!("[::]:{}", shared::CONFIG.port), {
+		let cert_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.cert)?);
+		let key_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.key)?);
 
-		// let cert_chain = certs(cert_file).ok().context("no certs")?.into_iter()
-			// .map(rustls::Certificate)
-			// .collect::<Vec<_>>();
+		let cert_chain = certs(cert_file).ok().context("no certs")?.into_iter()
+			.map(rustls::Certificate)
+			.collect::<Vec<_>>();
 
-		// let mut keys = pkcs8_private_keys(key_file).context("no private keys")?.into_iter()
-			// .map(rustls::PrivateKey)
-			// .collect::<Vec<_>>();
+		let mut keys = pkcs8_private_keys(key_file).context("no private keys")?.into_iter()
+			.map(rustls::PrivateKey)
+			.collect::<Vec<_>>();
 
-		// rustls::ServerConfig::builder()
-			// .with_cipher_suites(rustls::DEFAULT_CIPHER_SUITES)
-			// .with_safe_default_kx_groups()
-			// .with_protocol_versions(rustls::DEFAULT_VERSIONS)?
-			// .with_no_client_auth()
-			// .with_single_cert(cert_chain, keys.remove(0))?
-	// })?
+		rustls::ServerConfig::builder()
+			.with_cipher_suites(rustls::DEFAULT_CIPHER_SUITES)
+			.with_safe_default_kx_groups()
+			.with_protocol_versions(rustls::DEFAULT_VERSIONS)?
+			.with_no_client_auth()
+			.with_single_cert(cert_chain, keys.remove(0))?
+	})?
 	.run().await?)
 }

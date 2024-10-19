@@ -15,7 +15,15 @@ hobo_css = { path = "hobo/hobo_css" }
 hobo_css_macros = { path = "hobo/hobo_css_macros" }
 
 [profile.release]
-opt-level = "z"
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+
+[profile.wasm-release]
+inherits = "release"
+strip = "symbols"
+opt-level = "s"
 lto = "fat"
 codegen-units = 1
 panic = "abort"

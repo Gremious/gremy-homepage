@@ -12,8 +12,8 @@
 	clippy::wildcard_imports,
 )]
 
-pub mod prelude;
-use prelude::*;
+pub mod shared_prelude;
+use shared_prelude::*;
 
 use core::future::Future;
 use wasm_bindgen_futures::spawn_local as spawn;
@@ -21,8 +21,23 @@ use wasm_bindgen_futures::spawn_local as spawn;
 #[derive(Serialize, Deserialize)]
 pub struct Config {
 	pub dev: bool,
+	pub port: u64,
     pub hostname: String,
-	pub stream_keys: HashMap<String, String>,
+	pub stream_keys: Vec<Key>,
+	pub ssl: SslConfig,
+}
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Key {
+    pub name: String,
+    pub pass: String,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SslConfig {
+    pub key: String,
+    pub cert: String,
 }
 
 pub static CONFIG: Lazy<Config> = Lazy::new(|| toml::from_str(include_str!("../../Config.toml")).expect("failed to parse config"));
