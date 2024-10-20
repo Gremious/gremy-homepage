@@ -2,12 +2,13 @@ use super::*;
 use widgets as w;
 
 // TODO: Re-write animation using hobo macros
+// blog page?
+// sticker page? big effort but cool
+// check how we do fonts nowadays and see if you can cleanup
 
 // TODO: Easter eggs
 // - Hide something behind lain image.
 // - Type "hi" - type out smiley face to hello text e.g. "Hello :)_"t
-// - Type "hello" - secret item fly-in?
-// - Template page lol
 
 struct Clicked(bool);
 
@@ -108,14 +109,19 @@ fn timer() -> e::Div {
 		.class(css::color::rgba(css::colors::WHITE))
 		.text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
 			let dur = important_dt.signed_duration_since(now.naive_local());
-			format!("{} ({}).", dur_as_largest_word(dur, false), dur_as_largest_word(dur, true))
+			if dur.num_seconds() > 0 {
+				format!("{} ({}).", dur_as_largest_word(dur, false), dur_as_largest_word(dur, true))
+			} else {
+				format!("Today!!! 🎉🎉🎉")
+			}
 		}));
 
 	let seconds_countdown = e::div()
 		.font(&text::space_mono::SMALL)
 		.class(css::color::rgba(css::colors::WHEAT))
 		.text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
-			important_dt.signed_duration_since(now.naive_local()).num_seconds().to_string()
+			let secs = important_dt.signed_duration_since(now.naive_local()).num_seconds();
+			if secs > 0 { secs.to_string() } else { String::from("0") }
 		}));
 
 	w::column(0)
