@@ -8,6 +8,7 @@ pub use once_cell::sync::Lazy;
 pub use smart_default::SmartDefault;
 // pub use wasm_bindgen_futures::spawn_local as spawn;
 pub use shrinkwraprs::Shrinkwrap;
+pub use shared::shared_prelude::*;
 
 pub fn window() -> web_sys::Window { web_sys::window().expect("no window") }
 pub fn document() -> web_sys::Document { window().document().expect("no document") }

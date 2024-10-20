@@ -43,4 +43,24 @@ pub mod space_mono {
         )
     });
 
+    pub static MEDIUM: Lazy<css::Style> = Lazy::new(|| {
+        css::style!(
+            .& {
+                css::font_family::Some(vec![String::from("Space Mono")]),
+                css::font_weight::val(400),
+                css::font_size::px(24),
+            }
+        )
+    });
+
+    pub static SMALL: Lazy<css::Style> = Lazy::new(|| {
+        css::style!(
+            .& {
+                css::font_family::Some(vec![String::from("Space Mono")]),
+                css::font_weight::val(400),
+                css::font_size::px(16),
+            }
+        )
+    });
+
 }

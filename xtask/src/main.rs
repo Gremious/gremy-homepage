@@ -27,6 +27,7 @@ enum Command {
 	WatchClient,
 	WatchServer,
 	Deploy,
+	ReRun,
 }
 
 fn main() {
@@ -101,6 +102,13 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 			scp_to_server("./target/release/server", "/home/gremious/gremy-homepage/server")?;
 			ssh_cmd("systemctl start gremy-homepage")?;
 		},
+		Command::ReRun => {
+			handle_command(Command::BuildClient { release: false })?;
+			let maybe_errors = command_output("cargo build -p client --target wasm32-unknown-unknown --target-dir target/wasm-target")?;
+			if maybe_errors.lines().any(|l| l.contains("error: coult not compile")) { return Ok(()); }
+
+			command("cargo run -p server").status()?;
+		}
 	};
 
 	Ok(())

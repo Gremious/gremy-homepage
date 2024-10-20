@@ -16,10 +16,15 @@
 mod prelude;
 mod style;
 mod pages;
+mod widgets;
 mod hobo_plus;
 // mod benches;
 
 use prelude::*;
+
+#[derive(Debug, Copy, Clone)]
+pub struct CurrTime(pub chrono::DateTime<chrono::Local>);
+pub static CURR_TIME: Lazy<Mutable<CurrTime>> = Lazy::new(|| Mutable::new(CurrTime(chrono::Local::now())));
 
 #[derive(Shrinkwrap)]
 #[shrinkwrap(mutable)]
@@ -30,6 +35,14 @@ pub struct OvenPlayerLoaded(pub Mutable<bool>);
 pub fn main() {
 	wasm_logger::init(wasm_logger::Config::default());
 	console_error_panic_hook::set_once();
+
+	wasm_bindgen_futures::spawn_local(async move {
+		let mut interval = async_timer::interval(std::time::Duration::from_secs(1));
+		loop {
+			interval.wait().await;
+			CURR_TIME.set(CurrTime(chrono::Local::now()));
+		}
+	});
 
 	wasm_bindgen_futures::spawn_local(async {
 		log::info!("Main Thread Spawned");

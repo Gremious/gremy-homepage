@@ -1,6 +1,5 @@
-use shared::shared_prelude::*;
 use super::*;
-
+use widgets as w;
 
 // TODO: Re-write animation using hobo macros
 
@@ -16,6 +15,7 @@ pub fn new() -> e::Div {
 	container()
 		.child(lain_image())
 		.child(hello_header())
+		.child(timer())
 		.child(homepage_nav())
 }
 
@@ -98,6 +98,32 @@ fn hello_header() -> e::Div {
 		)
 }
 
+fn timer() -> e::Div {
+	let date = chrono::NaiveDate::from_ymd_opt(2025, 1, 10).unwrap();
+	let time = chrono::NaiveTime::default();
+	let important_dt = chrono::NaiveDateTime::new(date, time);
+
+	let big_countdown = e::div()
+		.font(&text::space_mono::MEDIUM)
+		.class(css::color::rgba(css::colors::WHITE))
+		.text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
+			let dur = important_dt.signed_duration_since(now.naive_local());
+			format!("{} ({}).", dur_as_largest_word(dur, false), dur_as_largest_word(dur, true))
+		}));
+
+	let seconds_countdown = e::div()
+		.font(&text::space_mono::SMALL)
+		.class(css::color::rgba(css::colors::WHEAT))
+		.text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
+			important_dt.signed_duration_since(now.naive_local()).num_seconds().to_string()
+		}));
+
+	w::column(0)
+		.child(big_countdown)
+		.child(seconds_countdown)
+}
+
+
 #[allow(clippy::cast_precision_loss)]
 pub fn fade_in_typewriter_animated_text(text: &str) -> e::Div {
 	e::div()
@@ -146,9 +172,9 @@ fn homepage_nav() -> e::Ul {
 		.child(e::a().href("https://data.gremy.co.uk")
 			.child(button("data").style(css::animation_delay::dur(200)))
 		)
-		.child(e::a().href("/stream")
-			.child(button("stream").style(css::animation_delay::dur(200)))
-		)
+		// .child(e::a().href("/stream")
+			// .child(button("stream").style(css::animation_delay::dur(200)))
+		// )
 		.child(e::a().href("https://github.com/Gremious")
 			.child(button("github").style(css::animation_delay::dur(300)))
 		)
@@ -200,3 +226,26 @@ fn button(text: &str) -> e::Li {
 			))
 		)
 }
+
+pub fn dur_as_largest_word(dur: chrono::Duration, second_largest: bool) -> String {
+	let durations = [
+		(dur.num_days() / 365,                "year"),
+		(dur.num_weeks(),                     "week"),
+		(dur.num_days(),                      "day"),
+		(dur.num_hours(),                     "hour"),
+		(dur.num_minutes(),                   "minute"),
+		(dur.num_seconds(),                   "second"),
+		(dur.num_milliseconds(),              "milisecond"),
+		(dur.num_microseconds().unwrap_or(0), "microsecond"),
+		(dur.num_nanoseconds().unwrap_or(0),  "nanosecond"),
+	];
+
+	let Some((i, _)) = durations.iter().enumerate().find(|(_, (x, _))| *x > 0) else { return String::from("a moment")} ;
+
+	if let Some((value, word)) = durations.get(if second_largest { i + 1 } else { i }) {
+		format!("{value} {word}{}", if *value > 1 { "s" } else { "" })
+	} else {
+		String::from("a moment")
+	}
+}
+

@@ -12,3 +12,4 @@ toml = "0.8"
 wasm-bindgen-futures = "0.4"
 reqwest = "0.12"
 tap = "1"
+chrono = { version = "0.4", features = ["serde"] }

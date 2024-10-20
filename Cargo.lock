@@ -409,6 +409,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-timer"
+version = "1.0.0-beta.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5ff4ca74f619ff7e4eb279686a814665fc910cd2fca2bb943491b9bc40e80c8b"
+dependencies = [
+ "error-code",
+ "libc",
+ "wasm-bindgen",
+ "web-time",
+]
+
+[[package]]
 name = "atomic-waker"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -604,6 +616,7 @@ name = "client"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "async-timer",
  "console_error_panic_hook",
  "hobo",
  "js-sys",
@@ -854,6 +867,12 @@ dependencies = [
  "libc",
  "windows-sys 0.52.0",
 ]
+
+[[package]]
+name = "error-code"
+version = "3.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a5d9305ccc6942a704f4335694ecd3de2ea531b114ac2d51f5f843750787a92f"
 
 [[package]]
 name = "execute"
@@ -2326,6 +2345,7 @@ name = "shared"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "chrono",
  "log",
  "once_cell",
  "reqwest",
@@ -2954,6 +2974,16 @@ name = "web-sys"
 version = "0.3.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f6488b90108c040df0fe62fa815cbdee25124641df01814dd7282749234c6112"
+dependencies = [
+ "js-sys",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "web-time"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a6580f308b1fad9207618087a65c04e7a10bc77e02c8e84e9b00dd4b12fa0bb"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
