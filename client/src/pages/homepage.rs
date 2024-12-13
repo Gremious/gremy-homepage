@@ -100,7 +100,7 @@ fn hello_header() -> e::Div {
 }
 
 fn timer() -> e::Div {
-	let date = chrono::NaiveDate::from_ymd_opt(2025, 1, 10).unwrap();
+	let date = chrono::NaiveDate::from_ymd_opt(2025, 1, 8).unwrap();
 	let time = chrono::NaiveTime::default();
 	let important_dt = chrono::NaiveDateTime::new(date, time);
 
