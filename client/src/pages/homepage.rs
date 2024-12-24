@@ -15,6 +15,17 @@ struct Clicked(bool);
 pub fn new() -> e::Div {
 	container()
 		.child(lain_image())
+		.child(e::img()
+			.src("../public/img/broken-glass.png")
+			.class((
+				css::position::absolute,
+				css::top::unit(css::Unit::pct(50) - css::Unit::px(75)),
+				css::left::unit(css::Unit::pct(50) - css::Unit::px(190)),
+				css::width::px(348),
+				css::height::px(279),
+				css::pointer_events::none,
+			))
+		)
 		.child(hello_header())
 		.child(timer())
 		.child(homepage_nav())
@@ -40,16 +51,37 @@ fn container() -> e::Div {
 }
 
 fn lain_image() -> e::Div {
+	let lain_image_height = 600;
+	let lain_image_width = 672;
+
 	e::div()
 		.class((
+			css::z_index::val(1000),
 			css::position::absolute,
-			css::top::unit(css::Unit::pct(50) - css::Unit::px(300)),
-			css::left::unit(css::Unit::pct(50) - css::Unit::px(336)),
-			css::width::px(672),
-			css::height::px(600),
-			css::background_image::Some(vec![css::Image::Url("../public/img/lain/small.webp".to_string())]),
-			css::background_repeat::no_repeat,
+			css::top::unit(css::Unit::pct(50) - css::Unit::px(lain_image_height / 2)),
+			css::left::unit(css::Unit::pct(50) - css::Unit::px(lain_image_width / 2)),
+			css::height::px(lain_image_height),
+			css::width::px(lain_image_width),
 		))
+		.child(
+			e::div()
+				.class((
+					css::background_color::rgba(css::colors::BLACK),
+					css::position::absolute,
+					css::width::px(300),
+					css::height::px(300),
+					css::top::unit(css::Unit::pct(50) - css::Unit::px(150)),
+					css::left::unit(css::Unit::pct(50) - css::Unit::px(150)),
+				))
+		)
+		.child(e::div()
+			.class((
+				css::background_image::Some(vec![css::Image::Url("../public/img/lain/small.webp".to_string())]),
+				css::background_repeat::no_repeat,
+				css::position::relative,
+				css::size::pct(100.),
+			))
+		)
 		.tap(|&element| element.add_on_mouse_down(move |_| {
 			element.set_class_tagged("Cursor", css::class!(css::cursor::grabbing));
 			*element.get_cmp_mut::<Clicked>() = Clicked(true);
