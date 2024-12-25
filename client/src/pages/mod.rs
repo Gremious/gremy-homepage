@@ -13,6 +13,7 @@
 use super::*;
 
 pub mod homepage;
+pub mod real;
 pub mod stream;
 pub mod debug;
 
@@ -127,19 +128,7 @@ impl Page {
             Tab::Homepage => homepage::new().as_element(),
 			Tab::Debug => debug::new().as_element(),
 			Tab::Stream => stream::new().as_element(),
-			Tab::Real => e::div()
-				.style(css::color::rgba(css::colors::WHITE))
-				.child(
-					e::div()
-						.text("homepage")
-						.on_click(|_| pages::navigate(Tab::Homepage))
-				)
-				.child(
-					e::div()
-						.text("here")
-						.on_click(|_| pages::navigate(Tab::Real))
-				)
-				.as_element(),
+			Tab::Real => real::new().as_element(),
         }
         .class_typed::<Page>(css::style!(
             .& {

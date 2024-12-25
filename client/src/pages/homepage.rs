@@ -77,7 +77,7 @@ fn lain_image() -> e::Div {
 		.child(
 			e::div()
 				.class((
-					css::background_color::rgba(css::colors::BLACK),
+					css::background_color::rgba(colors::bg_black),
 					css::position::absolute,
 					css::width::px(300),
 					css::height::px(300),
