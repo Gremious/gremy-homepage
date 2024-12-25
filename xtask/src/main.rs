@@ -80,8 +80,21 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 			command(format!("cargo build -p server{}", if release { " --release" } else { "" })).status()?;
 		},
 		Command::Build { release } => {
-			handle_command(Command::BuildClient { release })?;
 			handle_command(Command::BuildServer { release })?;
+
+			if release {
+				let current_rustflags = std::env::var("RUSTFLAGS");
+				// Copt-level=s to optimize for size
+				// Note that this overrides the ones in .cargo/config.toml
+				std::env::set_var("RUSTFLAGS", "-Copt-level=s --cfg=web_sys_unstable_apis --cfg=getrandom_backend=\"wasm_js\" ");
+				let ret = handle_command(Command::BuildClient { release });
+
+				current_rustflags.map_or_else(|_| std::env::remove_var("RUSTFLAGS"), |x| std::env::set_var("RUSTFLAGS", x));
+
+				ret?;
+			} else {
+				handle_command(Command::BuildClient { release })?;
+			}
 		},
 		Command::WatchClient => {
 			if command("watchexec --version").status().is_err() {
