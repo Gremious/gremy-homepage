@@ -14,7 +14,7 @@ struct Clicked(bool);
 
 pub fn new() -> e::Div {
 	container()
-		// .child(lain_image())
+		.child(lain_image())
 		.child(glass_entry())
 		.child(hello_header())
 		.child(timer())
