@@ -155,7 +155,7 @@ fn timer() -> e::Div {
 			if dur.num_seconds() > 0 {
 				format!("{} ({}).", dur_as_largest_word(dur, false), dur_as_largest_word(dur, true))
 			} else {
-				format!("Today!!! 🎉🎉🎉")
+				String::from("Today!!! 🎉🎉🎉")
 			}
 		}));
 

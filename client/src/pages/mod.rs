@@ -75,7 +75,7 @@ impl Tab {
 pub fn navigate(tab: impl Into<Tab>) {
 	fn navigate_(mut tab: Tab) {
 		let tab_state = Mutable::<Navigation>::resource();
-		let &mut pages::Navigation { ref mut cur, ref mut prev, ref mut popped } = &mut tab_state.lock_mut() as &mut _;
+		let &mut pages::Navigation { ref mut cur, ref mut prev, .. } = &mut tab_state.lock_mut() as &mut _;
 		if *cur == tab { return; }
 
 		std::mem::swap(cur, &mut tab);
@@ -103,18 +103,18 @@ pub fn body() -> e::Div {
 
 				// If we somehow try to navigate from the same page onto itself, do nothing
 				match cur {
-					Tab::Homepage => if !matches!(prev, Some(Tab::Homepage)) {
+					Tab::Homepage => if matches!(prev, Some(Tab::Homepage)) { None } else {
 						Some(Page::tab_page(Tab::Homepage))
-					} else { None },
-					Tab::Stream => if !matches!(prev, Some(Tab::Stream)) {
+					},
+					Tab::Stream => if matches!(prev, Some(Tab::Stream)) { None } else {
 						Some(Page::tab_page(Tab::Stream))
-					} else { None },
-					Tab::Real => if !matches!(prev, Some(Tab::Real)) {
+					},
+					Tab::Real => if matches!(prev, Some(Tab::Real)) { None } else {
 						Some(Page::tab_page(Tab::Real))
-					} else { None },
-					Tab::Debug => if !matches!(prev, Some(Tab::Debug)) {
+					},
+					Tab::Debug => if matches!(prev, Some(Tab::Debug)) { None } else {
 						Some(Page::tab_page(Tab::Debug))
-					} else { None },
+					}
 				}
 			}).map(Option::unwrap))
 		)
