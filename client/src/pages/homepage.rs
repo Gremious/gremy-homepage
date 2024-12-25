@@ -14,18 +14,8 @@ struct Clicked(bool);
 
 pub fn new() -> e::Div {
 	container()
-		.child(lain_image())
-		.child(e::img()
-			.src("../public/img/broken-glass.png")
-			.class((
-				css::position::absolute,
-				css::top::unit(css::Unit::pct(50) - css::Unit::px(75)),
-				css::left::unit(css::Unit::pct(50) - css::Unit::px(190)),
-				css::width::px(348),
-				css::height::px(279),
-				css::pointer_events::none,
-			))
-		)
+		// .child(lain_image())
+		.child(glass_entry())
 		.child(hello_header())
 		.child(timer())
 		.child(homepage_nav())
@@ -48,6 +38,27 @@ fn container() -> e::Div {
 				.& { "background-size: cover;" }
 			}
 		))
+}
+
+fn glass_entry() -> e::A {
+	e::a()
+		.class((
+			css::position::absolute,
+			css::top::unit(css::Unit::pct(50) - css::Unit::px(75)),
+			css::left::unit(css::Unit::pct(50) - css::Unit::px(190)),
+			css::width::px(348),
+			css::height::px(279),
+		))
+		.child(e::img()
+			.src("../public/img/broken-glass.png")
+			.class((
+				css::pointer_events::none,
+				css::size::pct(100.),
+			))
+		)
+		.on_click(|_| {
+			pages::navigate(Tab::Real);
+		})
 }
 
 fn lain_image() -> e::Div {

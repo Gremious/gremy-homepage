@@ -44,9 +44,26 @@ pub fn main() {
 		}
 	});
 
+	// this triggers when user navigates history, either back or forward
+	std::mem::forget(window().on_pop_state(move |_| {
+		let tab_state = Mutable::<pages::Navigation>::resource();
+		let &mut pages::Navigation { ref mut cur, ref mut prev, ref mut popped } = &mut tab_state.lock_mut() as &mut _;
+
+		let mut new_tab = pages::Tab::from_url();
+		if *cur != new_tab {
+			std::mem::swap(cur, &mut new_tab);
+			*prev = Some(new_tab);
+			*popped = true;
+		}
+	}));
+
 	wasm_bindgen_futures::spawn_local(async {
 		log::info!("Main Thread Spawned");
-		Resource::register_resource(Mutable::new(pages::Tab::from_url()));
+		Resource::register_resource(Mutable::new(pages::Navigation {
+			cur: pages::Tab::from_url(),
+			prev: None,
+			popped: false,
+		}));
 
 		document().body().unwrap()
 			.tap(|body| body.set_inner_html(""))

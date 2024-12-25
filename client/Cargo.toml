@@ -29,6 +29,7 @@ wasm-logger = "0.2"
 serde-wasm-bindgen = "0.6"
 shrinkwraprs = "0.3.0"
 async-timer = "=1.0.0-beta.14"
+rand = { version =  "0.9.0-beta.1", features = ["std_rng"] }
 # wasm-bindgen = { version = "0.2", features = ["serde-serialize", "strict-macro", "enable-interning"] }
 
 [dependencies.web-sys]
