@@ -4,7 +4,8 @@ mod main;
 use crate::pages::Clicked;
 
 pub fn new() -> e::Div {
-	let parent = e::div();
+	let parent = e::div()
+		.component(Clicked(false));
 
 	let grid_items = [
 		one::new().text("one"),
@@ -21,12 +22,26 @@ pub fn new() -> e::Div {
 	let center = grid_items[4];
 
 	parent
-		.class((
-			css::display::grid,
-			css::user_select::none,
-			"grid-template-columns: repeat(3, 1fr);",
-			"grid-template-rows: repeat(3, 1fr);",
-			css::color::rgba(css::colors::WHITE)
+		.class(css::style!(
+			.& {
+				css::display::grid,
+				css::user_select::none,
+				"grid-template-columns: repeat(3, 1fr);",
+				"grid-template-rows: repeat(3, 1fr);",
+				css::color::rgba(css::colors::WHITE),
+				"background-image: repeating-linear-gradient(
+					-45deg,
+					transparent,
+					transparent 20px,
+					rgba(190, 25, 90, 0.5) 20px,
+					rgba(190, 25, 90, 0.5) 40px
+				);",
+				css::cursor::grab,
+			}
+
+			.& > * {
+				css::aspect_ratio::val(1.77),
+			}
 		))
 		.on_next_flow(move || {
 			let viewport_height = document().document_element().unwrap().client_height() as f64;
@@ -70,15 +85,15 @@ pub fn new() -> e::Div {
 		})
 		.children(grid_items)
 		.tap(|&element| element.add_on_mouse_down(move |_| {
-			element.set_class_tagged("Cursor", css::class!(css::cursor::grabbing));
+			element.set_style(css::cursor::grabbing);
 			*element.get_cmp_mut::<Clicked>() = Clicked(true);
 		}))
 		.tap(|&element| element.add_on_mouse_up(move |_| {
-			element.set_class_tagged("Cursor", css::class!(css::cursor::auto));
+			element.remove_style();
 			element.get_cmp_mut::<Clicked>().0 = false;
 		}))
 		.tap(|&element| element.add_on_mouse_leave(move |_| {
-			element.set_class_tagged("Cursor", css::class!(css::cursor::auto));
+			element.remove_style();
 			element.get_cmp_mut::<Clicked>().0 = false;
 		}))
 		.tap(|&element| element.add_on_mouse_move(move |mouse_event| {
@@ -89,7 +104,6 @@ pub fn new() -> e::Div {
 				web_sys::window().unwrap().scroll_by_with_x_and_y(-move_x, -move_y);
 			}
 		}))
-		.component(Clicked(false))
 }
 
 fn scroll_to_ele(ele: e::Div) {
@@ -108,7 +122,6 @@ fn scroll_to_ele(ele: e::Div) {
 	let top = (ele_top - body_top) - (extra_height / 2.0);
 	let left = ele_left - body_left - (extra_width / 2.0);
 
-	log::debug!("top: {}, left: {}", top,  left);
 	window().scroll_to_with_x_and_y(left, top);
 }
 

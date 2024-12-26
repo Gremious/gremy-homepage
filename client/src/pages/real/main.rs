@@ -2,10 +2,14 @@ use crate::prelude::*;
 
 pub fn new() -> e::Div {
 	e::div()
-		.class((
-			css::aspect_ratio::val(1.77),
-			css::border_style::solid,
-			css::border_color::rgba(css::colors::RED),
-			css::border_width::px(2),
-		))
+		.child(e::div()
+			.class((
+				css::size::px(100.),
+				css::background_color::rgba(css::colors::LIGHTPINK),
+				css::cursor::auto,
+			))
+			// Stop if you need the mouse to not move
+			// .on_mouse_down(|e| e.stop_propagation())
+		)
+
 }
