@@ -7,7 +7,7 @@
 // "with our SPA-style approach you shouldn't actually be hrefing across your site - only pushing location to history stack to pretend like you are
 // if you want to href around without getting flashbanged - we need SSR" - @awpteamoose
 //
-// (though  also
+// (though	also
 // "if you have some body style you can just .to_string() and slam it into a <style> tag in your reply, or as a build step save it in public and link to it like a plain css file"
 // so then you can give it background-color: black; every reply, which could work to prevent flashbang)
 use super::*;
@@ -90,52 +90,49 @@ pub fn navigate(tab: impl Into<Tab>) {
 
 pub fn body() -> e::Div {
 	e::div()
-		.class((css::display::flex, css::min_height::vh(100)))
-		.child(e::div()
-			.class((css::display::flex, css::flex_direction::column, css::width::pct(100.)))
-			.child_signal(Mutable::<Navigation>::resource().signal().filter_map(|Navigation { cur, prev, popped }| {
-				// only push state if not going back/forward in history and if not same url
-				if popped {
-					Mutable::<Navigation>::resource().lock_mut().popped = false;
-				} else {
-					let new_url = cur.to_url();
-					if window().location().href().unwrap_or_default() != new_url {
-						window().history().ok().and_then(|x| x.push_state_with_url(&JsValue::NULL, "", Some(&new_url)).ok());
-					}
+		.class(css::display::flex)
+		.child_signal(Mutable::<Navigation>::resource().signal().filter_map(|Navigation { cur, prev, popped }| {
+			// only push state if not going back/forward in history and if not same url
+			if popped {
+				Mutable::<Navigation>::resource().lock_mut().popped = false;
+			} else {
+				let new_url = cur.to_url();
+				if window().location().href().unwrap_or_default() != new_url {
+					window().history().ok().and_then(|x| x.push_state_with_url(&JsValue::NULL, "", Some(&new_url)).ok());
 				}
+			}
 
-				// If we somehow try to navigate from the same page onto itself, do nothing
-				match cur {
-					Tab::Homepage => if matches!(prev, Some(Tab::Homepage)) { None } else {
-						Some(Page::tab_page(Tab::Homepage))
-					},
-					Tab::Stream => if matches!(prev, Some(Tab::Stream)) { None } else {
-						Some(Page::tab_page(Tab::Stream))
-					},
-					Tab::Real => if matches!(prev, Some(Tab::Real)) { None } else {
-						Some(Page::tab_page(Tab::Real))
-					},
-					Tab::Debug => if matches!(prev, Some(Tab::Debug)) { None } else {
-						Some(Page::tab_page(Tab::Debug))
-					}
+			// If we somehow try to navigate from the same page onto itself, do nothing
+			match cur {
+				Tab::Homepage => if matches!(prev, Some(Tab::Homepage)) { None } else {
+					Some(Page::tab_page(Tab::Homepage))
+				},
+				Tab::Stream => if matches!(prev, Some(Tab::Stream)) { None } else {
+					Some(Page::tab_page(Tab::Stream))
+				},
+				Tab::Real => if matches!(prev, Some(Tab::Real)) { None } else {
+					Some(Page::tab_page(Tab::Real))
+				},
+				Tab::Debug => if matches!(prev, Some(Tab::Debug)) { None } else {
+					Some(Page::tab_page(Tab::Debug))
 				}
-			}).map(Option::unwrap))
-		)
+			}
+		}).map(Option::unwrap))
 }
 
 pub struct Page;
 impl Page {
-    pub fn tab_page(tab: Tab) -> Element {
-        match tab {
-            Tab::Homepage => homepage::new().as_element(),
+	pub fn tab_page(tab: Tab) -> Element {
+		match tab {
+			Tab::Homepage => homepage::new().as_element(),
 			Tab::Debug => debug::new().as_element(),
 			Tab::Stream => stream::new().as_element(),
 			Tab::Real => real::new().as_element(),
-        }
-        .class_typed::<Page>(css::style!(
-            .& {
-                css::size::pct(100),
-            }
-        ))
-    }
+		}
+		.class_typed::<Page>(css::style!(
+			.& {
+				css::color::rgba(css::colors::WHITE),
+			}
+		))
+	}
 }

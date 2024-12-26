@@ -23,8 +23,9 @@ fn container() -> e::Div {
 	e::div()
 		.class(css::style!(
 			.& {
-				css::position::relative,
 				css::display::flex,
+				css::width::pct(100.),
+				css::height::vh(100),
 				css::flex_direction::column,
 				css::justify_content::flex_start,
 				css::box_sizing::border_box,
@@ -120,7 +121,6 @@ fn hello_header() -> e::Div {
 	e::div()
 		.class(css::style!(
 			.& {
-				css::color::rgba(css::colors::WHITE),
 				"text-shadow: 2px 2px 1px black;",
 			}
 
@@ -147,7 +147,6 @@ fn timer() -> e::Div {
 
 	let big_countdown = e::div()
 		.font(&text::space_mono::MEDIUM)
-		.class(css::color::rgba(css::colors::WHITE))
 		.text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
 			let dur = important_dt.signed_duration_since(now.naive_local());
 			if dur.num_seconds() > 0 {
@@ -209,7 +208,7 @@ fn homepage_nav() -> e::Ul {
 				}
 
 				100% {
-		            -webkit-transform: translateX(0);
+					-webkit-transform: translateX(0);
 				}
 			"}
 		))
@@ -234,7 +233,6 @@ fn button(text: &str) -> e::Li {
 		.class(css::style!(
 			.& {
 				css::user_select::none,
-				css::color::rgba(css::colors::WHITE),
 				css::animation_name::String(String::from("fade-in-left")),
 				css::animation_duration::dur(500),
 				css::animation_timing_function::raw("cubic-bezier(.22,.61,.36,1)"),
