@@ -10,5 +10,6 @@ pub use smart_default::SmartDefault;
 pub use shrinkwraprs::Shrinkwrap;
 pub use shared::shared_prelude::*;
 
-pub fn window() -> web_sys::Window { web_sys::window().expect("no window") }
-pub fn document() -> web_sys::Document { window().document().expect("no document") }
+pub use hobo_plus::{*, AsElementExt};
+pub use utils::*;
+

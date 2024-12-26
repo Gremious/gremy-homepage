@@ -17,6 +17,8 @@ pub mod real;
 pub mod stream;
 pub mod debug;
 
+pub struct Clicked(bool);
+
 #[derive(Default, Clone, Copy, Debug)]
 pub struct Navigation {
 	pub cur: Tab,

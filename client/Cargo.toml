@@ -28,9 +28,11 @@ wasm-logger = "0.2"
 # wasm-mt = "0.1"
 serde-wasm-bindgen = "0.6"
 shrinkwraprs = "0.3.0"
-async-timer = "=1.0.0-beta.14"
+async-timer = "=1.0.0-beta.15"
 rand = { version =  "0.9.0-beta.1", features = ["std_rng"] }
 # wasm-bindgen = { version = "0.2", features = ["serde-serialize", "strict-macro", "enable-interning"] }
+hobo-plus = { path = "../hobo-plus" }
+utils = { path = "../utils" }
 
 [dependencies.web-sys]
 version = "0.3"

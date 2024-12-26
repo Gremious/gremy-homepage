@@ -67,7 +67,7 @@ pub fn main() {
 
 		document().body().unwrap()
 			.tap(|body| body.set_inner_html(""))
-			.pipe(|body| e::Body(e::html_element(&body)))
+			.pipe(|body| e::Body(e::html_element(&body)).component(hobo::element::InDom))
 			.allow_no_parent()
 			.class(style::style())
 			.class(css::background_color::rgba(colors::bg_black))

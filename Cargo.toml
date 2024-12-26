@@ -13,6 +13,9 @@ hobo = { path = "hobo/hobo" }
 hobo_derive = { path = "hobo/hobo_derive" }
 hobo_css = { path = "hobo/hobo_css" }
 hobo_css_macros = { path = "hobo/hobo_css_macros" }
+hobo-plus = { path = "hobo-plus" }
+utils = { path = "utils" }
+chrono = { git = "https://github.com/Awpteamoose/chrono", branch = "rkyv-upd" }
 
 [profile.release]
 opt-level = 3

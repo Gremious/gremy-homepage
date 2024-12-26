@@ -1,5 +1,6 @@
 use super::*;
 use widgets as w;
+use pages::Clicked;
 
 // TODO: Re-write animation using hobo macros
 // blog page?
@@ -7,10 +8,7 @@ use widgets as w;
 // check how we do fonts nowadays and see if you can cleanup
 
 // TODO: Easter eggs
-// - Hide something behind lain image.
 // - Type "hi" - type out smiley face to hello text e.g. "Hello :)_"t
-
-struct Clicked(bool);
 
 pub fn new() -> e::Div {
 	container()
