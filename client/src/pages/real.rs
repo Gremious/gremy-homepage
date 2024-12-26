@@ -29,13 +29,19 @@ pub fn new() -> e::Div {
 				"grid-template-columns: repeat(3, 1fr);",
 				"grid-template-rows: repeat(3, 1fr);",
 				css::color::rgba(css::colors::WHITE),
-				"background-image: repeating-linear-gradient(
-					-45deg,
-					transparent,
-					transparent 20px,
-					rgba(190, 25, 90, 0.5) 20px,
-					rgba(190, 25, 90, 0.5) 40px
-				);",
+				css::background_image::Some(vec![
+					css::Image::RepeatingLinearGradient(css::LinearGradient {
+						angle: F32::new(-45.0).unwrap(),
+						stop_list: vec![
+							(css::Color::new(0, 0, 0, 0), css::Unit::px(0)),
+							(css::Color::new(0, 0, 0, 0), css::Unit::px(48)),
+							// (css::Color::new(209, 114, 136, 127), css::Unit::px(16)),
+							(css::Color::new(114, 187, 209, 127), css::Unit::px(48)),
+							(css::Color::new(72, 109, 221, 127), css::Unit::px(54)),
+						],
+
+					}),
+				]),
 				css::cursor::grab,
 			}
 

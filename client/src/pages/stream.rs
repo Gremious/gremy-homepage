@@ -76,20 +76,18 @@ fn media_player() -> e::Div {
 		.class((
 			css::width::px(1280),
 			css::height::px(720),
-			// "background-image: repeating-linear-gradient(
-			//     -45deg,
-			//     transparent,
-			//     transparent 20px,
-			//     rgb(255, 0, 90) 20px,
-			//     rgb(255, 0, 90) 40px
-			// );",
-			"background-image: repeating-linear-gradient(
-				-45deg,
-				transparent,
-				transparent 20px,
-				rgba(190, 25, 90, 0.5) 20px,
-				rgba(190, 25, 90, 0.5) 40px
-			);",
+			css::background_image::Some(vec![
+				css::Image::RepeatingLinearGradient(css::LinearGradient {
+					angle: F32::new(-45.0).unwrap(),
+					stop_list: vec![
+						(css::Color::new(0, 0, 0, 0), css::Unit::px(0)),
+						(css::Color::new(0, 0, 0, 0), css::Unit::px(20)),
+						(css::Color::new(190, 25, 90, 127), css::Unit::px(20)),
+						(css::Color::new(190, 25, 90, 127), css::Unit::px(40)),
+					],
+
+				}),
+			]),
 			css::background_color::rgba(css::colors::BLACK),
 			css::resize::both,
 			css::overflow::auto,
