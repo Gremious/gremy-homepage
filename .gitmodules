@@ -4,3 +4,9 @@
 [submodule "OvenPlayer"]
 	path = OvenPlayer
 	url = https://github.com/AirenSoft/OvenPlayer.git
+[submodule "hobo-plus"]
+	path = hobo-plus
+	url = git@github.com:Gremious/hobo-plus.git
+[submodule "utils"]
+	path = utils
+	url = git@github.com:Gremious/utils.git
