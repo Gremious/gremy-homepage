@@ -49,7 +49,7 @@ fn glass_entry() -> e::A {
 			css::height::px(279),
 		))
 		.child(e::img()
-			.src("../public/img/broken-glass.png")
+			.src("../public/img/broken_glass.png")
 			.class((
 				css::pointer_events::none,
 				css::size::pct(100.),

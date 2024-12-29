@@ -93,7 +93,7 @@ pub fn new() -> e::Div {
 		.child(e::div()
 			.class((
 				css::size::pct(100.),
-				css::background_image::url("../public/img/static-lain.jpg"),
+				css::background_image::url("../public/img/static_lain.jpg"),
 				css::z_index::val(-1000),
 				css::background_size::cover,
 				css::position::absolute,
