@@ -9,7 +9,7 @@ pub fn new() -> e::Div {
 				css::cursor::auto,
 			))
 			// Stop if you need the mouse to not move
-			// .on_mouse_down(|e| e.stop_propagation())
+			.on_mouse_down(|e| e.stop_propagation())
 		)
 
 }

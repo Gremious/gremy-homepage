@@ -25,23 +25,24 @@ pub fn new() -> e::Div {
 		.class(css::style!(
 			.& {
 				css::display::grid,
+				css::position::relative,
 				css::user_select::none,
 				"grid-template-columns: repeat(3, 1fr);",
 				"grid-template-rows: repeat(3, 1fr);",
 				css::color::rgba(css::colors::WHITE),
-				css::background_image::Some(vec![
-					css::Image::RepeatingLinearGradient(css::LinearGradient {
-						angle: F32::new(-45.0).unwrap(),
-						stop_list: vec![
-							(css::Color::new(0, 0, 0, 0), css::Unit::px(0)),
-							(css::Color::new(0, 0, 0, 0), css::Unit::px(48)),
-							// (css::Color::new(209, 114, 136, 127), css::Unit::px(16)),
-							(css::Color::new(114, 187, 209, 127), css::Unit::px(48)),
-							(css::Color::new(72, 109, 221, 127), css::Unit::px(54)),
-						],
+				// css::background_image::Some(vec![
+					// css::Image::RepeatingLinearGradient(css::LinearGradient {
+						// angle: F32::new(-45.0).unwrap(),
+						// stop_list: vec![
+							// (css::Color::new(0, 0, 0, 0), css::Unit::px(0)),
+							// (css::Color::new(0, 0, 0, 0), css::Unit::px(48)),
+							// // (css::Color::new(209, 114, 136, 127), css::Unit::px(16)),
+							// (css::Color::new(114, 187, 209, 127), css::Unit::px(48)),
+							// (css::Color::new(72, 109, 221, 127), css::Unit::px(54)),
+						// ],
 
-					}),
-				]),
+					// }),
+				// ]),
 				css::cursor::grab,
 			}
 
@@ -89,6 +90,27 @@ pub fn new() -> e::Div {
 
 			closure
 		})
+		.child(e::div()
+			.class((
+				css::size::pct(100.),
+				css::background_image::url("../public/img/static-lain.jpg"),
+				css::z_index::val(-1000),
+				css::background_size::cover,
+				css::position::absolute,
+				css::background_repeat::no_repeat,
+			))
+		)
+		.child(e::div()
+			.class((
+				css::size::pct(100.),
+				css::background_image::url("../public/img/bg.jpg"),
+				css::z_index::val(-1000),
+				css::opacity::val(0.25),
+				css::background_size::cover,
+				css::position::absolute,
+				css::background_repeat::no_repeat,
+			))
+		)
 		.children(grid_items)
 		.tap(|&element| element.add_on_mouse_down(move |_| {
 			element.set_style(css::cursor::grabbing);
