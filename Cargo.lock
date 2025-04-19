@@ -665,6 +665,7 @@ dependencies = [
  "shared",
  "shrinkwraprs",
  "smart-default",
+ "strum",
  "tap",
  "url",
  "utils",

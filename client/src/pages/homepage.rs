@@ -1,4 +1,6 @@
 use super::*;
+use chrono::FixedOffset;
+use duration::*;
 use widgets as w;
 use pages::Clicked;
 
@@ -13,7 +15,7 @@ use pages::Clicked;
 pub fn new() -> e::Div {
 	container()
 		.child(lain_image())
-		.child(glass_entry())
+		// .child(glass_entry())
 		.child(hello_header())
 		.child(timer())
 		.child(homepage_nav())
@@ -141,18 +143,29 @@ fn hello_header() -> e::Div {
 }
 
 fn timer() -> e::Div {
-	let date = chrono::NaiveDate::from_ymd_opt(2025, 1, 8).unwrap();
-	let time = chrono::NaiveTime::default();
+	let date = chrono::NaiveDate::from_ymd_opt(2025, 2, 9).unwrap();
+	let time = chrono::NaiveTime::from_hms_opt(20, 25, 0).unwrap();
 	let important_dt = chrono::NaiveDateTime::new(date, time);
+	let timezone_dt = important_dt.and_local_timezone(
+		FixedOffset::west_opt(5 * 3600).unwrap(),
+	).unwrap();
 
 	let big_countdown = e::div()
+		.class(css::white_space::pre)
 		.font(&text::space_mono::MEDIUM)
 		.text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
-			let dur = important_dt.signed_duration_since(now.naive_local());
-			if dur.num_seconds() > 0 {
-				format!("{} ({}).", dur_as_largest_word(dur, false), dur_as_largest_word(dur, true))
+			let dur = timezone_dt.signed_duration_since(now);
+			let duration = dur_as_largest_word(dur, false);
+			let leftover = if let Some(leftover) = dur_leftover(dur) {
+				format!(" and {}", leftover.to_lowercase())
 			} else {
-				String::from("Today!!! 🎉🎉🎉")
+				String::new()
+			};
+
+			if dur.num_seconds() > 0 {
+				format!("{duration}{leftover}.")
+			} else {
+				format!("Now!!! 🎉🎉🎉\n{duration}{leftover}.")
 			}
 		}));
 
@@ -271,26 +284,3 @@ fn button(text: &str) -> e::Li {
 			))
 		)
 }
-
-pub fn dur_as_largest_word(dur: chrono::Duration, second_largest: bool) -> String {
-	let durations = [
-		(dur.num_days() / 365,                "year"),
-		(dur.num_weeks(),                     "week"),
-		(dur.num_days(),                      "day"),
-		(dur.num_hours(),                     "hour"),
-		(dur.num_minutes(),                   "minute"),
-		(dur.num_seconds(),                   "second"),
-		(dur.num_milliseconds(),              "milisecond"),
-		(dur.num_microseconds().unwrap_or(0), "microsecond"),
-		(dur.num_nanoseconds().unwrap_or(0),  "nanosecond"),
-	];
-
-	let Some((i, _)) = durations.iter().enumerate().find(|(_, (x, _))| *x > 0) else { return String::from("a moment")} ;
-
-	if let Some((value, word)) = durations.get(if second_largest { i + 1 } else { i }) {
-		format!("{value} {word}{}", if *value > 1 { "s" } else { "" })
-	} else {
-		String::from("a moment")
-	}
-}
-

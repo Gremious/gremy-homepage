@@ -33,6 +33,7 @@ rand = { version =  "0.9.0-beta.1", features = ["std_rng"] }
 # wasm-bindgen = { version = "0.2", features = ["serde-serialize", "strict-macro", "enable-interning"] }
 hobo-plus = { path = "../hobo-plus" }
 utils = { path = "../utils" }
+strum = { version = "0.26.3", features = ["derive", "strum_macros"] }
 
 [dependencies.web-sys]
 version = "0.3"

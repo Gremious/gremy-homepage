@@ -22,7 +22,7 @@ pub use reqwest::header;
 
 use std::fs::File;
 use std::io::BufReader;
-use rustls_pemfile::{certs, pkcs8_private_keys};
+use rustls_pemfile::{certs, ec_private_keys};
 
 #[allow(clippy::unused_async)]
 async fn reply() -> HttpResponse {
@@ -99,8 +99,9 @@ async fn main() -> anyhow::Result<()> {
 			.service(actix_files::Files::new("/public", "public").show_files_listing())
 			.default_service(web::route().to(reply))
 	})
-	// .bind(format!("0.0.0.0:{}", CONFIG.http_port))?
+	// .bind(format!("0.0.0.0:{}", shared::CONFIG.port))?
 	// .bind(format!("[::]:{}", CONFIG.http_port))?
+	// .bind_rustls(format!("0.0.0.0:{}", shared::CONFIG.port), {
 	.bind_rustls(format!("[::]:{}", shared::CONFIG.port), {
 		let cert_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.cert)?);
 		let key_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.key)?);
@@ -109,7 +110,8 @@ async fn main() -> anyhow::Result<()> {
 			.map(rustls::Certificate)
 			.collect::<Vec<_>>();
 
-		let mut keys = pkcs8_private_keys(key_file).context("no private keys")?.into_iter()
+		// let mut keys = rustls_pemfile::pkcs8_private_keys(key_file).context("no private keys")?.into_iter()
+		let mut keys = ec_private_keys(key_file).context("no private keys")?.into_iter()
 			.map(rustls::PrivateKey)
 			.collect::<Vec<_>>();
 

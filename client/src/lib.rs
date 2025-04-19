@@ -18,6 +18,7 @@ mod style;
 mod pages;
 mod widgets;
 mod hobo_plus;
+mod duration;
 // mod benches;
 
 use prelude::*;
