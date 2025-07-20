@@ -17,7 +17,7 @@ pub fn new() -> e::Div {
 		.child(lain_image())
 		// .child(glass_entry())
 		.child(hello_header())
-		.child(timer())
+		// .child(timer())
 		.child(homepage_nav())
 }
 
@@ -142,45 +142,45 @@ fn hello_header() -> e::Div {
 		)
 }
 
-fn timer() -> e::Div {
-	let date = chrono::NaiveDate::from_ymd_opt(2025, 2, 9).unwrap();
-	let time = chrono::NaiveTime::from_hms_opt(20, 25, 0).unwrap();
-	let important_dt = chrono::NaiveDateTime::new(date, time);
-	let timezone_dt = important_dt.and_local_timezone(
-		FixedOffset::west_opt(5 * 3600).unwrap(),
-	).unwrap();
+// fn timer() -> e::Div {
+	// let date = chrono::NaiveDate::from_ymd_opt(2025, 2, 9).unwrap();
+	// let time = chrono::NaiveTime::from_hms_opt(20, 25, 0).unwrap();
+	// let important_dt = chrono::NaiveDateTime::new(date, time);
+	// let timezone_dt = important_dt.and_local_timezone(
+		// FixedOffset::west_opt(5 * 3600).unwrap(),
+	// ).unwrap();
 
-	let big_countdown = e::div()
-		.class(css::white_space::pre)
-		.font(&text::space_mono::MEDIUM)
-		.text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
-			let dur = timezone_dt.signed_duration_since(now);
-			let duration = dur_as_largest_word(dur, false);
-			let leftover = if let Some(leftover) = dur_leftover(dur) {
-				format!(" and {}", leftover.to_lowercase())
-			} else {
-				String::new()
-			};
+	// let big_countdown = e::div()
+		// .class(css::white_space::pre)
+		// .font(&text::space_mono::MEDIUM)
+		// .text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
+			// let dur = timezone_dt.signed_duration_since(now);
+			// let duration = dur_as_largest_word(dur, false);
+			// let leftover = if let Some(leftover) = dur_leftover(dur) {
+				// format!(" and {}", leftover.to_lowercase())
+			// } else {
+				// String::new()
+			// };
 
-			if dur.num_seconds() > 0 {
-				format!("{duration}{leftover}.")
-			} else {
-				format!("Now!!! 🎉🎉🎉\n{duration}{leftover}.")
-			}
-		}));
+			// if dur.num_seconds() > 0 {
+				// format!("{duration}{leftover}.")
+			// } else {
+				// format!("Now!!! 🎉🎉🎉\n{duration}{leftover}.")
+			// }
+		// }));
 
-	let seconds_countdown = e::div()
-		.font(&text::space_mono::SMALL)
-		.class(css::color::rgba(css::colors::WHEAT))
-		.text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
-			let secs = important_dt.signed_duration_since(now.naive_local()).num_seconds();
-			if secs > 0 { secs.to_string() } else { String::from("0") }
-		}));
+	// let seconds_countdown = e::div()
+		// .font(&text::space_mono::SMALL)
+		// .class(css::color::rgba(css::colors::WHEAT))
+		// .text_signal(crate::CURR_TIME.signal().map(move |CurrTime(now)| {
+			// let secs = important_dt.signed_duration_since(now.naive_local()).num_seconds();
+			// if secs > 0 { secs.to_string() } else { String::from("0") }
+		// }));
 
-	w::column(0)
-		.child(big_countdown)
-		.child(seconds_countdown)
-}
+	// w::column(0)
+		// .child(big_countdown)
+		// .child(seconds_countdown)
+// }
 
 
 #[allow(clippy::cast_precision_loss)]
