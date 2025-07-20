@@ -10,8 +10,9 @@
 	clippy::missing_panics_doc,
 	clippy::wildcard_imports,
 )]
-#![feature(try_blocks, async_closure, fn_traits, unboxed_closures)]
+#![feature(try_blocks, fn_traits, unboxed_closures)]
 
+use rustls::{crypto::CryptoProvider, pki_types::PrivateKeyDer};
 use shared::shared_prelude::*;
 
 use actix_files::NamedFile;
@@ -22,7 +23,7 @@ pub use reqwest::header;
 
 use std::fs::File;
 use std::io::BufReader;
-use rustls_pemfile::{certs, ec_private_keys};
+use rustls_pemfile::certs;
 
 #[allow(clippy::unused_async)]
 async fn reply() -> HttpResponse {
@@ -81,14 +82,9 @@ pub fn init_logger() {
 
 #[actix::main]
 async fn main() -> anyhow::Result<()> {
-	// use actix_cors::Cors;
-
 	init_logger();
 
-
 	Ok(HttpServer::new(|| {
-		// let cors = Cors::permissive();
-
 		App::new()
 			.wrap(Logger::new("%s in %Ts, %b bytes \"%r\""))
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
@@ -102,25 +98,26 @@ async fn main() -> anyhow::Result<()> {
 	// .bind(format!("0.0.0.0:{}", shared::CONFIG.port))?
 	// .bind(format!("[::]:{}", CONFIG.http_port))?
 	// .bind_rustls(format!("0.0.0.0:{}", shared::CONFIG.port), {
-	.bind_rustls(format!("[::]:{}", shared::CONFIG.port), {
+	.bind_rustls_0_23(format!("[::]:{}", shared::CONFIG.port), {
 		let cert_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.cert)?);
 		let key_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.key)?);
 
-		let cert_chain = certs(cert_file).ok().context("no certs")?.into_iter()
-			.map(rustls::Certificate)
+		let cert_chain = certs(cert_file)
+			.map(|k| k.context("Bad cert").unwrap())
 			.collect::<Vec<_>>();
 
-		// let mut keys = rustls_pemfile::pkcs8_private_keys(key_file).context("no private keys")?.into_iter()
-		let mut keys = ec_private_keys(key_file).context("no private keys")?.into_iter()
-			.map(rustls::PrivateKey)
-			.collect::<Vec<_>>();
+		// let mut keys = ec_private_keys(key_file).context("no private keys")?.into_iter()
+		let key = rustls_pemfile::pkcs8_private_keys(key_file)
+			.map(|k| k.context("Bad private key").unwrap())
+			.map(|k8| PrivateKeyDer::Pkcs8(k8))
+			.collect::<Vec<_>>().first().unwrap().clone_key();
+
+		CryptoProvider::install_default(rustls::crypto::ring::default_provider())
+			.expect("Failed to init ring crypto provider");
 
 		rustls::ServerConfig::builder()
-			.with_cipher_suites(rustls::DEFAULT_CIPHER_SUITES)
-			.with_safe_default_kx_groups()
-			.with_protocol_versions(rustls::DEFAULT_VERSIONS)?
 			.with_no_client_auth()
-			.with_single_cert(cert_chain, keys.remove(0))?
+			.with_single_cert(cert_chain, key)?
 	})?
 	.run().await?)
 }

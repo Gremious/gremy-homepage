@@ -73,7 +73,7 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 			command(wasm_bindgen).status()?;
 
 			if release {
-				command("wasm-opt public/wasm/code_bg.wasm --enable-reference-types -o public/wasm/code_bg.wasm -Os").status()?;
+				command("wasm-opt public/wasm/code_bg.wasm --enable-reference-types --enable-bulk-memory --enable-nontrapping-float-to-int -o public/wasm/code_bg.wasm -Os").status()?;
 			}
 		},
 		Command::BuildServer { release } => {

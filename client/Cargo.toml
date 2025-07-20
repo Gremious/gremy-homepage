@@ -1,7 +1,7 @@
 [package]
 name = "client"
 version = "0.1.0"
-edition = "2018"
+edition = "2024"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -9,7 +9,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 anyhow = "1"
 console_error_panic_hook = "0.1"
-hobo = { version = "0.4", features = ["experimental"] }
+hobo = { version = "1.0.0-rc.1", features = ["experimental"] }
 js-sys = "0.3"
 log = "0.4"
 once_cell = "1"
@@ -29,11 +29,11 @@ wasm-logger = "0.2"
 serde-wasm-bindgen = "0.6"
 shrinkwraprs = "0.3.0"
 async-timer = "=1.0.0-beta.15"
-rand = { version =  "0.9.0-beta.1", features = ["std_rng"] }
+# rand = { version =  "0.9.0-beta.1", features = ["std_rng"] }
 # wasm-bindgen = { version = "0.2", features = ["serde-serialize", "strict-macro", "enable-interning"] }
 hobo-plus = { path = "../hobo-plus" }
 utils = { path = "../utils" }
-strum = { version = "0.26.3", features = ["derive", "strum_macros"] }
+strum = { version = "0.27", features = ["derive", "strum_macros"] }
 
 [dependencies.web-sys]
 version = "0.3"
