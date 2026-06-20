@@ -100,29 +100,29 @@ async fn main() -> anyhow::Result<()> {
 			.service(actix_files::Files::new("/public", "public").show_files_listing())
 			.default_service(web::route().to(reply))
 	})
-	// .bind(format!("0.0.0.0:{}", shared::CONFIG.port))?
+	// We just go through nginx now so there's no need to do rustls on this side
+	.bind(format!("0.0.0.0:{}", shared::CONFIG.port))?
 	// .bind(format!("[::]:{}", CONFIG.http_port))?
-	// .bind_rustls(format!("0.0.0.0:{}", shared::CONFIG.port), {
-	.bind_rustls_0_23(format!("[::]:{}", shared::CONFIG.port), {
-		let cert_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.cert)?);
-		let key_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.key)?);
+	// .bind_rustls_0_23(format!("[::]:{}", shared::CONFIG.port), {
+	// .bind_rustls_0_23(format!("0.0.0.0:{}", shared::CONFIG.port), {
+	//     let cert_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.cert)?);
+	//     let key_file = &mut BufReader::new(File::open(&shared::CONFIG.ssl.key)?);
 
-		let cert_chain = certs(cert_file)
-			.map(|k| k.context("Bad cert").unwrap())
-			.collect::<Vec<_>>();
+	//     let cert_chain = certs(cert_file)
+	//         .map(|k| k.context("Bad cert").unwrap())
+	//         .collect::<Vec<_>>();
 
-		// let mut keys = ec_private_keys(key_file).context("no private keys")?.into_iter()
-		let key = rustls_pemfile::pkcs8_private_keys(key_file)
-			.map(|k| k.context("Bad private key").unwrap())
-			.map(|k8| PrivateKeyDer::Pkcs8(k8))
-			.collect::<Vec<_>>().first().unwrap().clone_key();
+	//     let key = rustls_pemfile::pkcs8_private_keys(key_file)
+	//         .map(|k| k.context("Bad private key").unwrap())
+	//         .map(PrivateKeyDer::Pkcs8)
+	//         .collect::<Vec<_>>().first().unwrap().clone_key();
 
-		CryptoProvider::install_default(rustls::crypto::ring::default_provider())
-			.expect("Failed to init ring crypto provider");
+	//     CryptoProvider::install_default(rustls::crypto::ring::default_provider())
+	//         .expect("Failed to init ring crypto provider");
 
-		rustls::ServerConfig::builder()
-			.with_no_client_auth()
-			.with_single_cert(cert_chain, key)?
-	})?
+	//     rustls::ServerConfig::builder()
+	//         .with_no_client_auth()
+	//         .with_single_cert(cert_chain, key)?
+	// })?
 	.run().await?)
 }

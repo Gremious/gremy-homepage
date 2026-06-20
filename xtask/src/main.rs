@@ -109,11 +109,17 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 		Command::Deploy => {
 			handle_command(Command::Build { release: true })?;
 
-			ssh_cmd("systemctl stop gremy-homepage")?;
-			ssh_cmd("mkdir /home/gremious/gremy-homepage")?;
-			scp_to_server("./public", "/home/gremious/gremy-homepage/")?;
-			scp_to_server("./target/release/server", "/home/gremious/gremy-homepage/server")?;
-			ssh_cmd("systemctl start gremy-homepage")?;
+			ssh_cmd("systemctl --user stop gremy-homepage")?;
+
+			ssh_cmd("rm -rf /srv/homepage/public")?;
+			scp_to_server("./public", "/srv/homepage")?;
+
+			ssh_cmd("rm -rf /srv/homepage/server")?;
+			scp_to_server("./target/release/server", "/srv/homepage/server")?;
+
+			ssh_cmd("chown -R :www-data /srv/homepage/")?;
+
+			ssh_cmd("systemctl --user start gremy-homepage")?;
 		},
 		Command::ReRun => {
 			handle_command(Command::BuildClient { release: false })?;
