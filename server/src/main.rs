@@ -26,13 +26,12 @@ async fn reply() -> HttpResponse {
 		let js = &std::fs::read_to_string("public/wasm/code.js").expect("couldn't find the js payload");
 		let js = minifier::js::minify(js);
 		let path = {
-			if cfg!(debug_assertions) {
-				let hostname = &format!("localhost:{}", shared::CONFIG.port);
-				format!("http://{hostname}/public/wasm/code_bg.wasm")
+			let hostname = if cfg!(debug_assertions) {
+				&format!("localhost:{}", shared::CONFIG.port)
 			} else {
-				let hostname = &shared::CONFIG.hostname;
-				format!("https://{hostname}/public/wasm/code_bg.wasm")
-			}
+				&shared::CONFIG.hostname
+			};
+			format!("http://{hostname}/public/wasm/code_bg.wasm")
 		};
 
 		minify::html::minify(&format!(include_str!("../response.html"), js = js, path = path))
@@ -89,7 +88,7 @@ async fn main() -> anyhow::Result<()> {
 			.wrap(Logger::new("%s in %Ts, %b bytes \"%r\""))
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
 			// .wrap(cors)
-			// .service(actix_files::Files::new("/public", "public").show_files_listing())
+			.service(actix_files::Files::new("/public", "public").show_files_listing())
 			.default_service(web::route().to(reply))
 	})
 	// We just go through nginx now so there's no need to do rustls on this side
