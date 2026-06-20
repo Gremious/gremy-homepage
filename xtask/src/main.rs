@@ -50,7 +50,7 @@ fn handle_command(cmd: Command) -> anyhow::Result<()> {
 				command("cargo install wasm-bindgen-cli -f").status()?;
 			}
 			if command("wasm-opt --version").status().is_err() {
-				command("cargo install wasm-opt -f").status()?;
+				command("cargo install wasm-opt --force --locked").status()?;
 			}
 			if !command_output("rustup target list --installed")?.lines().any(|x| x == "wasm32-unknown-unknown") {
 				command("rustup target add wasm32-unknown-unknown").status()?;

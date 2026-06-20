@@ -23,6 +23,8 @@ mod duration;
 
 use prelude::*;
 
+use js_sys::futures::spawn_local;
+
 #[derive(Debug, Copy, Clone)]
 pub struct CurrTime(pub chrono::DateTime<chrono::Local>);
 pub static CURR_TIME: Lazy<Mutable<CurrTime>> = Lazy::new(|| Mutable::new(CurrTime(chrono::Local::now())));
@@ -37,7 +39,7 @@ pub fn main() {
 	wasm_logger::init(wasm_logger::Config::default());
 	console_error_panic_hook::set_once();
 
-	wasm_bindgen_futures::spawn_local(async move {
+	spawn_local(async move {
 		let mut interval = async_timer::interval(std::time::Duration::from_secs(1));
 		loop {
 			interval.wait().await;
@@ -58,7 +60,7 @@ pub fn main() {
 		}
 	}));
 
-	wasm_bindgen_futures::spawn_local(async {
+	spawn_local(async {
 		log::info!("Main Thread Spawned");
 		Resource::register_resource(Mutable::new(pages::Navigation {
 			cur: pages::Tab::from_url(),

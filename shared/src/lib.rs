@@ -16,7 +16,7 @@ pub mod shared_prelude;
 use shared_prelude::*;
 
 use core::future::Future;
-use wasm_bindgen_futures::spawn_local as spawn;
+use js_sys::futures::spawn_local as spawn;
 
 #[derive(Serialize, Deserialize)]
 pub struct Config {

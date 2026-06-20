@@ -21,18 +21,23 @@ use actix_web::{web, App, HttpResponse, HttpServer};
 
 pub use reqwest::header;
 
-use std::fs::File;
+use std::{fs::File, sync::LazyLock};
 use std::io::BufReader;
 use rustls_pemfile::certs;
 
 #[allow(clippy::unused_async)]
 async fn reply() -> HttpResponse {
-	static REPLY: Lazy<String> = Lazy::new(|| {
+	static REPLY: LazyLock<String> = LazyLock::new(|| {
 		let js = &std::fs::read_to_string("public/wasm/code.js").expect("couldn't find the js payload");
 		let js = minifier::js::minify(js);
 		let path = {
-			let hostname = if cfg!(debug_assertions) { &format!("localhost:{}", shared::CONFIG.port) } else { &shared::CONFIG.hostname };
-			format!("https://{hostname}/public/wasm/code_bg.wasm")
+			if cfg!(debug_assertions) {
+				let hostname = &format!("localhost:{}", shared::CONFIG.port);
+				format!("http://{hostname}/public/wasm/code_bg.wasm")
+			} else {
+				let hostname = &shared::CONFIG.hostname;
+				format!("https://{hostname}/public/wasm/code_bg.wasm")
+			}
 		};
 
 		minify::html::minify(&format!(include_str!("../response.html"), js = js, path = path))
