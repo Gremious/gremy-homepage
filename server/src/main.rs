@@ -10,10 +10,7 @@
 	clippy::missing_panics_doc,
 	clippy::wildcard_imports,
 )]
-#![feature(try_blocks, fn_traits, unboxed_closures)]
-
-use rustls::{crypto::CryptoProvider, pki_types::PrivateKeyDer};
-use shared::shared_prelude::*;
+#![feature(unboxed_closures)]
 
 use actix_files::NamedFile;
 use actix_web::middleware::{Logger, NormalizePath, TrailingSlash};
@@ -21,9 +18,7 @@ use actix_web::{web, App, HttpResponse, HttpServer};
 
 pub use reqwest::header;
 
-use std::{fs::File, sync::LazyLock};
-use std::io::BufReader;
-use rustls_pemfile::certs;
+use std::sync::LazyLock;
 
 #[allow(clippy::unused_async)]
 async fn reply() -> HttpResponse {
@@ -94,10 +89,7 @@ async fn main() -> anyhow::Result<()> {
 			.wrap(Logger::new("%s in %Ts, %b bytes \"%r\""))
 			.wrap(NormalizePath::new(TrailingSlash::Trim))
 			// .wrap(cors)
-			.service(web::resource("/favicon.ico").to(async || NamedFile::open("public/img/favicon/sparkling_heart.ico")))
-			.service(web::resource("/sitemap.xml").to(async || NamedFile::open("public/sitemap.xml")))
-			.service(web::resource("/robots.txt").to(async || NamedFile::open("public/robots.txt")))
-			.service(actix_files::Files::new("/public", "public").show_files_listing())
+			// .service(actix_files::Files::new("/public", "public").show_files_listing())
 			.default_service(web::route().to(reply))
 	})
 	// We just go through nginx now so there's no need to do rustls on this side
